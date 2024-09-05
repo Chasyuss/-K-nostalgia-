@@ -132,7 +132,9 @@ export const Review = ({ productId }: { productId: string }) => {
       <div className="border-b-2 border-[#F2F2F2] w-full">
         <div className="w-[235px] my-8 mx-auto flex items-center justify-center border border-[##E0E0E0] bg-white rounded-[8px] p-4">
           <p className="mr-4 font-semibold">
-            {averageRate.toFixed(1)}{' '}
+            {averageRate === 0
+              ? averageRate.toFixed(0)
+              : averageRate.toFixed(1)}{' '}
             <span className="text-label-alternative"> / 5</span>
           </p>
           <StarRating rating={averageRate} size={24} />
