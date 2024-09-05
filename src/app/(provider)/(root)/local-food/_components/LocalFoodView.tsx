@@ -16,7 +16,15 @@ import { DiscountAmount } from '../[id]/_components/DiscountAmount';
 type LocalFood = Tables<'local_food'>;
 
 const LocalFoodView = () => {
-  const categoryList = ['전체', '과일', '야채', '고기', '곡물', '공예품'];
+  const categoryList = [
+    '전체',
+    '과일',
+    '야채',
+    '고기',
+    '해산물',
+    '곡물',
+    '공예품'
+  ];
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const { isDesktop } = useDeviceSize();
 
