@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/pagination';
 import { RiArrowLeftDoubleFill, RiArrowRightDoubleFill } from 'react-icons/ri';
 import useDeviceSize from '@/hooks/useDeviceSize';
+import { ComplainButton } from './ComplainButton';
 
 type UserType = {
   name: string;
@@ -164,7 +165,8 @@ export const Review = ({ productId }: { productId: string }) => {
                       <span className="inline-block pl-2 text-label-assistive font-normal text-sm">
                         {dayjs(review.created_at)
                           .locale('ko')
-                          .format('YYYY. MM. DD')}
+                          .format('YYYY. MM. DD')}{' '}
+                        | <ComplainButton />
                       </span>
                     </p>
                     <StarRating rating={review.rating} size={20} />
