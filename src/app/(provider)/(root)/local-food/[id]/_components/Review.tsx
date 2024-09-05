@@ -160,15 +160,18 @@ export const Review = ({ productId }: { productId: string }) => {
                   )}
 
                   <div className="flex-1">
-                    <p className="text-label-strong font-semibold">
-                      {review.users?.name}
-                      <span className="inline-block pl-2 text-label-assistive font-normal text-sm">
-                        {dayjs(review.created_at)
-                          .locale('ko')
-                          .format('YYYY. MM. DD')}{' '}
-                        | <ComplainButton />
-                      </span>
-                    </p>
+                    <div className="flex gap-1">
+                      <p className="text-label-strong font-semibold">
+                        {review.users?.name}
+                        <span className="inline-block pl-2 text-label-assistive font-normal text-sm">
+                          {dayjs(review.created_at)
+                            .locale('ko')
+                            .format('YYYY. MM. DD')}{' '}
+                          |
+                        </span>
+                      </p>
+                      <ComplainButton />
+                    </div>
                     <StarRating rating={review.rating} size={20} />
                   </div>
 
