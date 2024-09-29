@@ -20,9 +20,10 @@ const LocalFoodView = () => {
     '전체',
     '과일',
     '야채',
+    '채소',
     '고기',
     '해산물',
-    '곡물',
+    '견과류',
     '공예품'
   ];
   const [selectedCategory, setSelectedCategory] = useState('전체');
