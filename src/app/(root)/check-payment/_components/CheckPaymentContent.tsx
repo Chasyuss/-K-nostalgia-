@@ -1,10 +1,10 @@
 'use client';
 
 //feat : 결제 확인 -> 내역 supabase 저장
-
-//update : 24.09.30
+//update : 24.10.23
 
 import { toast } from '@/components/ui/use-toast';
+import supabase from '@/utils/supabase/client';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -18,6 +18,7 @@ const CheckPaymentContent = () => {
   const paymentId = searchParams.get('paymentId');
   const code = searchParams.get('code');
   const totalQuantity = searchParams.get('totalQuantity');
+  const isCouponApplied = searchParams.get('isCouponApplied');
 
   const [isPaymentHistoryLoaded, setIsPaymentHistoryLoaded] =
     useState<boolean>(false);
@@ -48,7 +49,6 @@ const CheckPaymentContent = () => {
             method,
             customer,
             products
-            //TODO webhooks 정보 필요할지 확인 후 필요하면 추가
           } = payHistory;
 
           const newPaidAt = dayjs(paidAt) //결제 일시 형식 변경(dayjs)
@@ -85,9 +85,18 @@ const CheckPaymentContent = () => {
                 : method.card.name,
               phone_number: customer.phoneNumber,
               products,
-              user_email: customer.email
+              user_email: customer.email,
+              is_CouponApplied: isCouponApplied === 'true' ? true : false
             })
           });
+
+          //쿠폰 사용 시 users 테이블 coupon 항목 비움
+          if (isCouponApplied === 'true') {
+            await supabase
+              .from('users')
+              .update({ coupon: null })
+              .eq('email', customer.email);
+          }
 
           router.replace(`complete-payment?paymentId=${paymentId}`);
         };
