@@ -1,9 +1,9 @@
 'use client';
 
 //공용 컴포넌트로 작성 (버튼 컴포넌트)
-//결제할 상품 정보를 props로 받아, 결제 창 요청하는 로직이 들어있음
+//feta : 결제할 상품 정보를 props로 받아, 결제 창 요청
 
-//update : 24.10.10
+//update : 24.10.23
 
 import { useUser } from '@/hooks/useUser';
 import PortOne from '@portone/browser-sdk/v2';
@@ -24,6 +24,7 @@ type Props = {
   orderNameArr: string[]; //상품 명 배열
   product: ProductProps; //상품 정보 obj[]
   text: string; //버튼 텍스트 - 버튼 비활성화 및 스타일링에 사용
+  //TODO isCouponApplied: boolean
 };
 
 type ButtonStylesObj = {
@@ -33,23 +34,26 @@ type ButtonStylesObj = {
 const PayButton = ({ orderNameArr, product, text }: Props) => {
   const router = useRouter();
   const pathName = usePathname();
-  const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false); //결제 창 활성화 여부
+  const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false);
 
   const date = dayjs(new Date(Date.now())).locale('ko').format('YYMMDD');
   const newPaymentId = `${date}-${uuidv4().slice(0, 13)}`; //주문 번호 생성
 
   const DELIVERY_CHARGE: number = 2500;
-  const COUPON_DISCOUNT: number = 2000;
+  const COUPON_DISCOUNT: number = 2000; //TODO 쿠폰 할인 적용 작업 끝나면 수정
 
-  const price: number = product.reduce((acc, item) => acc + item.amount, 0); //배송비 및 쿠폰 할인 적용 전 금액
+  //배송비 및 쿠폰 할인 적용 전 금액
+  const price: number = product.reduce((acc, item) => acc + item.amount, 0);
 
   const totalQuantity = product.reduce((acc, item) => acc + item.quantity, 0);
-  const totalAmount = price + DELIVERY_CHARGE - COUPON_DISCOUNT;
+  const totalAmount = price + DELIVERY_CHARGE - COUPON_DISCOUNT; //TODO 쿠폰 할인 적용 작업 끝나면 수정
 
   const { data: user } = useUser();
 
   const [lastCallTime, setLastCallTime] = useState(0);
   const THROTTLE_DELAY = 5000;
+
+  const isCouponApplied: boolean = true; //TODO 쿠폰 적용 여부 더미 (테스트용)
 
   useEffect(() => {
     //결제 창 활성화 시 PopStateEvent 제한
@@ -117,16 +121,17 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
         products: product as any,
         redirectUrl:
           process.env.NODE_ENV === 'production'
-            ? `https://https://k-nostalgia-one.vercel.app/check-payment?totalQuantity=${totalQuantity}`
-            : `http://localhost:3000/check-payment?totalQuantity=${totalQuantity}`,
+            ? `https://https://k-nostalgia-one.vercel.app/check-payment?totalQuantity=${totalQuantity}&isCouponApplied=${isCouponApplied}`
+            : `http://localhost:3000/check-payment?totalQuantity=${totalQuantity}&isCouponApplied=${isCouponApplied}`,
         appScheme:
           process.env.NODE_ENV === 'production'
-            ? `https://https://k-nostalgia-one.vercel.app/check-payment?totalQuantity=${totalQuantity}`
-            : `http://localhost:3000/check-payment?totalQuantity=${totalQuantity}`,
+            ? `https://https://k-nostalgia-one.vercel.app/check-payment?totalQuantity=${totalQuantity}&isCouponApplied=${isCouponApplied}`
+            : `http://localhost:3000/check-payment?totalQuantity=${totalQuantity}&isCouponApplied=${isCouponApplied}`,
         noticeUrls: [
           //webhook url
-          `https://k-nostalgia-one.vercel.app/api/payment/webhook`,
-          'https://k-nostalgia-vdpl.vercel.app/api/payment/webhook'
+          `https://k-nostalgia-one.vercel.app/api/payment/webhook`, //실 배포 url
+          'https://k-nostalgia-vdpl.vercel.app/api/payment/webhook', //테스트용 배포 url
+          'https://7ac2-121-163-241-29.ngrok-free.app/api/payment/webhook' //테스트용 ngrok 서버
         ],
 
         customer: {
@@ -148,7 +153,7 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
 
       const paymentId = response?.paymentId;
 
-      //response.code가 존재하면 결제에 실패한 것
+      //response.code가 존재 === 결제 실패
       if (response?.code != null) {
         toast({
           variant: 'destructive',
@@ -162,9 +167,8 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
 
       //결제 확인 페이지로 이동(check-payment)
       //paymentId : 내역 조회에 사용
-      //TODO totalQuanity를 PARAMS로 전달하지 않고 response값에는 없는지 확인
       router.push(
-        `/check-payment?paymentId=${paymentId}&totalQuantity=${totalQuantity}`
+        `/check-payment?paymentId=${paymentId}&totalQuantity=${totalQuantity}&isCouponApplied=${isCouponApplied}`
       );
     } else {
       toast({
