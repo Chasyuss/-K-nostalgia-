@@ -65,6 +65,7 @@ const CheckPaymentContent = () => {
           }
 
           //결제 내역 supabase 저장
+          //TODO 내역 저장에 실패했을 경우, 결제 취소(환불)후 이전 페이지로 REDIRECT
           await fetch('/api/payment/pay-supabase', {
             method: 'POST',
             headers: {
