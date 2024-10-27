@@ -9,7 +9,7 @@ export const GET = async (request:NextRequest) => {
         const { id }: { id: string; } = await request.json();
  
         const { data, error } = await supabase
-        .from('')
+        .from('reports')
         .select('*')
         .eq('id', id)
 
@@ -20,4 +20,19 @@ export const GET = async (request:NextRequest) => {
     } catch(error){
     return NextResponse.json(error, {status: 500});
     }
+}
+
+
+export const POST = async (request:NextRequest) => {
+    const {}: Tables<'reports'> = await request.json();
+
+    const {data:chatData, error:chatError} = await supabase
+    .from('reports')
+    .insert([{}])
+    .select();
+
+    if (chatError) {
+        return NextResponse.json({error:chatError.message}, {status:400});
+    }
+    return NextResponse.json({data:chatData}, {status:200});
 }
