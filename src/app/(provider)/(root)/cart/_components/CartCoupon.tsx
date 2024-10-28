@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RadioButton } from './RadioButton';
+import { CouponConfirm } from './CouponConfirm';
 
 export const CartCoupon = () => {
   const [open, setOpen] = useState(false);
@@ -108,7 +109,7 @@ export const CartCoupon = () => {
                   </svg>
                 </>
               ) : (
-                <RadioButton />
+                <RadioButton setOpen={() => setOpen(false)} />
               )}
             </div>
           </div>

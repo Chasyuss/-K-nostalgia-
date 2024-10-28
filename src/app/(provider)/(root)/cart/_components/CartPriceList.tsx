@@ -8,7 +8,6 @@ interface CartProps {
   selectedItems: string[];
 }
 const DELIVERY_FEE = 2500;
-const COUPON = 2000;
 
 export const CartPriceList = ({ data, selectedItems }: CartProps) => {
   const [totalAmount, setTotalAmount] = useState(0);
@@ -34,7 +33,7 @@ export const CartPriceList = ({ data, selectedItems }: CartProps) => {
   }
 
   //총 결제금액
-  const totalPrice = totalAmount + DELIVERY_FEE - COUPON;
+  const totalPrice = totalAmount + DELIVERY_FEE;
 
   return (
     <div className="bg-normal mt-2 pt-6 pb-[30%] md:pb-0 relative">
