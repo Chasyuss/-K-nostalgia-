@@ -259,6 +259,7 @@ export type Database = {
           amount: number | null
           created_at: string | null
           id: string
+          is_CouponApplied: boolean | null
           order_name: string | null
           pay_provider: string | null
           payment_date: string | null
@@ -275,6 +276,7 @@ export type Database = {
           amount?: number | null
           created_at?: string | null
           id?: string
+          is_CouponApplied?: boolean | null
           order_name?: string | null
           pay_provider?: string | null
           payment_date?: string | null
@@ -291,6 +293,7 @@ export type Database = {
           amount?: number | null
           created_at?: string | null
           id?: string
+          is_CouponApplied?: boolean | null
           order_name?: string | null
           pay_provider?: string | null
           payment_date?: string | null
@@ -317,18 +320,24 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          reportedContent: string | null
+          reportedDetailContent: string | null
           reportedUserId: string[] | null
           reporterId: string | null
         }
         Insert: {
           created_at?: string
           id?: number
+          reportedContent?: string | null
+          reportedDetailContent?: string | null
           reportedUserId?: string[] | null
           reporterId?: string | null
         }
         Update: {
           created_at?: string
           id?: number
+          reportedContent?: string | null
+          reportedDetailContent?: string | null
           reportedUserId?: string[] | null
           reporterId?: string | null
         }
@@ -451,15 +460,7 @@ export type Database = {
           password?: string | null
           reportedUserId?: string[] | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -574,4 +575,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

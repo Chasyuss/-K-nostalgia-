@@ -24,11 +24,11 @@ export const GET = async (request:NextRequest) => {
 
 
 export const POST = async (request:NextRequest) => {
-    const {}: Tables<'reports'> = await request.json();
+    const {reporterId, reportedUserId, reportedContent, reportedDetailContent}: Tables<'reports'> = await request.json();
 
     const {data:chatData, error:chatError} = await supabase
     .from('reports')
-    .insert([{}])
+    .insert([{reporterId, reportedUserId, reportedContent, reportedDetailContent}])
     .select();
 
     if (chatError) {
