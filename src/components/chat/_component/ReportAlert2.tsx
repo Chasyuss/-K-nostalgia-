@@ -21,7 +21,7 @@ import { useState } from 'react';
 import ReportConfirmAlert from './ReportConfirmAlert';
 
 interface ReportAlertProps {
-  handleReport: () => void;
+  handleReport: (report: { reportedContent: string; reportedDetailContent: string }) => void;
   cancelReport: () => void;
   setSelectedChatRoom: React.Dispatch<
     React.SetStateAction<Tables<'rooms'> | null>
@@ -33,12 +33,37 @@ const ReportAlert2 = ({
   cancelReport,
   setSelectedChatRoom
 }: ReportAlertProps) => {
-  const [reportValue, setReportValue] = useState<string>('');
+  const [reportContent, setReportContent] = useState<string>('');
+  const [reportedDetailContent, setReportedDetailContent] = useState<string>('');
   const [reportConfirmAlert, setReportConfirmAlert] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const onClickReortConfirmAlert = () => {
+  const onClickReportConfirmAlert = () => {
     setReportConfirmAlert(true);
   };
+
+  const onHandleReport = async () => {
+    if (!reportContent || !reportedDetailContent) {
+      alert('신고 유형과 내용을 모두 입력해주세요.');
+      return;
+    }
+  
+    try {
+      setIsSubmitting(true);
+      await handleReport({
+        reportedContent: reportContent,
+        reportedDetailContent: reportedDetailContent,
+      });
+      setReportConfirmAlert(false);
+    } catch (error) {
+      console.error('Report submission failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  
+  console.log(reportContent, reportedDetailContent)
 
   return (
     <DialogContent className="bg-normal w-[330px] h-[627px] rounded-2xl md:w-[479px] md:h-[710px]">
@@ -74,21 +99,20 @@ const ReportAlert2 = ({
         <div className="text-label-strong text-base font-medium leading-[25.6px]">
           신고 유형
         </div>
-        <Select>
+        <Select onValueChange={(value) => setReportContent(value)}>
           <SelectTrigger className="border-[#959595] bg-[#FEFEFE] rounded-[8px]">
             <SelectValue
               placeholder="신고 유형을 선택해 주세요"
               className="text-label-assistive overflow-hidden text-sm leading-[22.4px] font-normal"
             />
           </SelectTrigger>
-          {/* 여기 밸류는 좀 더 고민해보기! 밸류 왜 있는지도 */}
           <SelectContent className="bg-[#FEFEFE]">
-            <SelectItem value="1">허위 정보를 기재</SelectItem>
-            <SelectItem value="2">
+            <SelectItem value="1.허위정보기재">허위 정보를 기재</SelectItem>
+            <SelectItem value="2.권리침해행위또는개인정보기재">
               권리 침해 행위 또는 개인 정보 게재
             </SelectItem>
-            <SelectItem value="3">비방, 욕설 행위</SelectItem>
-            <SelectItem value="4">기타</SelectItem>
+            <SelectItem value="3.비방욕설">비방, 욕설 행위</SelectItem>
+            <SelectItem value="4.기타">기타</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -101,8 +125,8 @@ const ReportAlert2 = ({
         <input
           placeholder="사용자 신고 이유를 자세하게 작성해 주세요"
           className="h-[172px] p-3 shrink-0 self-stretch border-[#959595] bg-[#FEFEFE] rounded-lg text-label-assistive overflow-hidden text-sm leading-[22.4px] font-normal"
-          value={reportValue}
-          onChange={(event) => setReportValue(event.target.value)}
+          value={reportedDetailContent}
+          onChange={(event) => setReportedDetailContent(event.target.value)}
         />
       </div>
 
@@ -122,16 +146,16 @@ const ReportAlert2 = ({
           <Button
             type="button"
             className={`h-12 px4 py-3 flex justify-center items-center self-stretch rounded-xl text-label-light ${
-              reportValue ? 'bg-primary-20' : 'bg-label-disable'
+              reportContent && reportedDetailContent ? 'bg-primary-20' : 'bg-label-disable'
             } hover:bg-primary-10`}
-            disabled={!reportValue}
+            disabled={!reportContent || !reportedDetailContent}
             aria-label="신고 접수하기"
-            onClick={onClickReortConfirmAlert}
+            onClick={onClickReportConfirmAlert}
           >
             접수하기
           </Button>
           {reportConfirmAlert && (
-          <ReportConfirmAlert handleReport={handleReport}/>
+          <ReportConfirmAlert handleReport={onHandleReport}/>
         )}
         </DialogFooter>
       </div>

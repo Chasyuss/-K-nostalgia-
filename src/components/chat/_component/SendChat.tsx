@@ -49,17 +49,22 @@ interface SendChatProps {
   isOpen: boolean;
 }
 
-export function SendChat({
+interface HandleReport {
+  reportedContent: string;
+  reportedDetailContent: string;
+}
+
+const SendChat = ({
   selectedChatRoom,
   setSelectedChatRoom,
   isOpen
-}: SendChatProps) {
+}: SendChatProps): JSX.Element => {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
   const messageRef = useRef<HTMLInputElement>(null);
   const scrollDown = useRef<HTMLDivElement | null>(null);
   const [removeChatId, setRemoveChatId] = useState<number>(0);
-
+0
   // xss 공격 방지
   const encoded = (str: string) => {
     if (str === null) {
@@ -199,15 +204,22 @@ export function SendChat({
     setSelectedChatRoom(null);
   };
 
+  const cancelReport = () => {
+    setRemoveChatId(0);
+  };
+
   // 신고 알럿
   const onClickReortAlert = (itemId: number) => {
     setRemoveChatId(itemId);
   };
 
-  const handleReport = async () => {
-    const item = data?.find((x) => x.id === removeChatId);
+  const handleReport = async ({ reportedContent, reportedDetailContent } : HandleReport) => {
+    if (!user?.id || !removeChatId) {
+      console.error('유저 아이디가 없거나 챗 아이다가 없음');
+      return;
+    }
 
-    console.log(item);
+    const item = data?.find((x) => x.id === removeChatId);
 
     if (item) {
       const response = await fetch('/api/chat/admin', {
@@ -215,8 +227,31 @@ export function SendChat({
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify({
+          id : user?.id,
+          reportedUserId: item.user_id
+        })
       });
+
+
+      if (response.ok) { 
+        const responseReport = await fetch('/api/chat/admin/report', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            reporterId: user?.id,
+            reportedUserId: item.user_id,
+            reportedContent,
+            reportedDetailContent
+
+          })
+        });
+
+        if(!response.ok) {
+          throw Error('오류 발생');
+        }
 
       queryClient.invalidateQueries({
         queryKey: ['chatData', selectedChatRoom?.room_id]
@@ -228,10 +263,7 @@ export function SendChat({
       });
     }
     cancelReport();
-  };
-
-  const cancelReport = () => {
-    setRemoveChatId(0);
+  }
   };
 
   return (
@@ -355,6 +387,6 @@ export function SendChat({
       </div>
     </DialogContent>
   );
-}
+ };
 
 export default SendChat;
