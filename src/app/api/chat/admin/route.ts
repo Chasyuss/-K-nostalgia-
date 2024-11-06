@@ -20,7 +20,7 @@ export const GET = async (request:NextRequest) => {
 }
 
 //유저 테이블에 넣기
-export const POST = async (request: NextRequest) => {
+export const PUT = async (request: NextRequest) => {
   try {
       const { id, reportedUserId }: { id: string; reportedUserId: string } = await request.json();
 

@@ -223,7 +223,7 @@ const SendChat = ({
 
     if (item) {
       const response = await fetch('/api/chat/admin', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         },
