@@ -13,6 +13,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from '../ui/use-toast';
 
+//TODO 유저 정보, 결제할 상품 정보 및 쿠폰 사용 여부 등 가공해서 전역관리(zustand)
+//TODO 결제 페이지로 REDIRECT
+
 type ProductProps = {
   id: string | null;
   name: string | null;
