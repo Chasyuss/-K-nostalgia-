@@ -1,7 +1,9 @@
-'use client';
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { BsChevronRight } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
+import CancelUser, {
+  CancelUserHandle
+} from '../../my-page/_components/CancelUser';
 
 interface CustomerSidebarProps {
   selected: number;
@@ -13,6 +15,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
   setSelected
 }) => {
   const router = useRouter();
+  const cancelUserRef = useRef<CancelUserHandle>(null);
 
   const menuItems = [
     { id: 1, label: '공지사항' },
@@ -30,6 +33,11 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
     router.push('/customer-service/faq-page');
   };
 
+  const handleCancelClick = () => {
+    setSelected(5);
+    cancelUserRef.current?.handleDeleteUser(); // CancelUser의 handleDeleteUser 메서드를 호출
+  };
+
   return (
     <div className="w-[193px] mb-[208px]">
       <div className="h-[290px] border-[#E0E0E0] border">
@@ -40,6 +48,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
               setSelected(item.id);
               if (item.id === 1) handlegoAnnounce();
               if (item.id === 2) handlegoFaq();
+              if (item.id === 5) handleCancelClick();
             }}
             className={`h-[58px] border-b flex px-5 py-4 justify-between items-center font-medium cursor-pointer ${
               selected === item.id
@@ -52,6 +61,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
           </div>
         ))}
       </div>
+      <CancelUser ref={cancelUserRef} /> {/* ref 연결 */}
     </div>
   );
 };

@@ -9,8 +9,8 @@ const Announcement: React.FC = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   return (
-    <div className="px-4 py-6 border-b border-[#E0E0E0] md:hidden">
-      <div className="mb-7 text-label-strong text-2xl font-semibold mt-10">
+    <div className="px-4 py-6 border-b border-[#E0E0E0] md:max-w-[999px]">
+      <div className="mb-7 text-label-strong text-2xl font-semibold mt-10 md:mt-14">
         {' '}
         자주 묻는 질문{' '}
       </div>

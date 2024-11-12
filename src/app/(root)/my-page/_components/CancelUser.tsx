@@ -1,21 +1,23 @@
-'use client';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import api from '@/service/service';
 import { useRouter } from 'next/navigation';
-import React from 'react';
-import { BsChevronRight, BsTrash3 } from 'react-icons/bs';
 import Swal from 'sweetalert2';
+import useDeviceSize from '@/hooks/useDeviceSize';
 
-const CancelUser = () => {
+export interface CancelUserHandle {
+  handleDeleteUser: () => void;
+}
+
+const CancelUser = forwardRef<CancelUserHandle>((_, ref) => {
   const router = useRouter();
+  const { isDesktop } = useDeviceSize();
 
   const handleDeleteUser = async () => {
     try {
       Swal.fire({
         title: '탈퇴하시겠습니까?',
-        html: `
-        <div id="swal2-html-container" class="swal2-html-container" style=" padding:0 !important; margin:-1rem; font-size:16px;"> 탈퇴시, 계정 복구는 불가능합니다.</div>
-      `,
+        html: `<div id="swal2-html-container" class="swal2-html-container" style="padding:0 !important; margin:-1rem; font-size:16px;"> 탈퇴시, 계정 복구는 불가능합니다.</div>`,
         showCancelButton: true,
         cancelButtonColor: '#9C6D2E',
         confirmButtonColor: '#f2f2f2',
@@ -35,14 +37,14 @@ const CancelUser = () => {
             await api.auth.deleteUser();
             toast({
               variant: 'destructive',
-              description: '탈퇴되었습니다. 다음에 다시 이용해주세요. '
+              description: '탈퇴되었습니다. 다음에 다시 이용해주세요.'
             });
             router.push('/log-in');
           } catch (error) {
             console.error('탈퇴 에러');
             toast({
               variant: 'destructive',
-              description: '탈퇴가 불가능합니다. '
+              description: '탈퇴가 불가능합니다.'
             });
           }
         }
@@ -51,8 +53,15 @@ const CancelUser = () => {
       console.error('탈퇴 과정에서 에러가 발생했습니다.');
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    handleDeleteUser
+  }));
+
+  if (isDesktop) return null;
+
   return (
-    <div className="p-4">
+    <div className="p-4 md:hidden">
       <div
         className="flex items-center py-[3px] cursor-pointer"
         onClick={handleDeleteUser}
@@ -61,14 +70,9 @@ const CancelUser = () => {
           {' '}
           회원탈퇴{' '}
         </div>
-
-        {/* <div className="md:items-center md:flex md:p-3 md:gap-2 md:cursor-pointer hidden md:mt-20">
-          <span className="text-label-alternative"> 회원탈퇴 </span>
-          <BsChevronRight className=" w-4 h-4 text-[#838383] cursor-pointer" />
-        </div> */}
       </div>
     </div>
   );
-};
+});
 
 export default CancelUser;
