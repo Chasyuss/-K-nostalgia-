@@ -12,6 +12,7 @@ import {
 import Image from 'next/image';
 import { BsChevronRight } from 'react-icons/bs';
 import WarningChat from './WarningChat';
+import ChatQnA from './ChatQnA';
 
 const ChatList = ({
   setSelectedChatRoom
@@ -21,6 +22,7 @@ const ChatList = ({
   >;
 }) => {
   const [showWarning, setShowWarning] = useState(false);
+  const [showQnA, setShowQnA] = useState(false);
 
   const fetchChatListData = async () => {
     const response = await fetch(`/api/chat/chat-list`);
@@ -37,7 +39,6 @@ const ChatList = ({
     setSelectedChatRoom(item);
   };
 
-  // 로컬 스토리지에서 세션 스토리지 변경
   useEffect(() => {
     const hasChater = sessionStorage.getItem('visitedChat');
     if (!hasChater) {
@@ -86,26 +87,30 @@ const ChatList = ({
             </div>
           </div>
         ))}
-      </div>
-      {/* 버튼 느낌 */}
-      <div className="flex border py-4 pl-4 pr-3 rounded-xl gap-1 cursor-pointer shadow-chatCustom justify-between bg-[#FFF]">
-        <div className="flex md:py-1">
-          <div
-            // width={48}
-            // height={48}
-            // alt="QnA버튼"
-            className="w-12 h-12"
-          />
-          <div className="ml-2 flex flex-col justify-center md:ml-3">
-            <div className="font-medium text-base leading-[22.4px]">QnA</div>
-            <div className="font-normal text-sm leading-[19.6px] text-label-alternative overflow-ellipsis">
-              물어볼 것이 있나요?
+        {/* 버튼 느낌 */}
+        <div
+          onClick={() => setShowQnA(true)}
+          className="flex border py-4 pl-4 pr-3 rounded-xl gap-1 cursor-pointer shadow-chatCustom justify-between bg-[#FFF]"
+        >
+          <div className="flex md:py-1">
+            <div
+              // width={48}
+              // height={48}
+              // alt="QnA버튼"
+              className="w-12 h-12"
+            />
+            <div className="ml-2 flex flex-col justify-center md:ml-3">
+              <div className="font-medium text-base leading-[22.4px]">챗봇 상담</div>
+              <div className="font-normal text-sm leading-[19.6px] text-label-alternative overflow-ellipsis">
+                궁금한 내용이 있으신가요?
+              </div>
             </div>
           </div>
+          <div className="flex justify-center p-3">
+            <BsChevronRight className="w-[22px] h-[22px]" />
+          </div>
         </div>
-        <div className="flex justify-center p-3">
-          <BsChevronRight className="w-[22px] h-[22px]" />
-        </div>
+        {showQnA && <ChatQnA setShowQnA={setShowQnA} />}
       </div>
       {/* 이용시 주의사항 */}
       <div

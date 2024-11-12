@@ -1,13 +1,14 @@
 import supabase from "@/utils/supabase/client";
 import { NextRequest, NextResponse } from "next/server";
 
+//가져올 때 로직 자체에서 비교할지 고민하기
 export const POST = async (request:NextRequest) => {
     const { room_id } = await request.json();
 
     try{
         const {data:chatData, error:chatError} = await supabase
         .from('chat')
-        .select(`*, users(nickname, avatar)`)
+        .select(`*, users(nickname, avatar, reportedUserId)`)
         // 해당 채팅방만 가져오는 로직
         .eq('room_id', room_id)
         // 오늘만 가져오는 로직
