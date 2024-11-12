@@ -31,7 +31,7 @@ const Announcement: React.FC = () => {
       </div>
 
       {isOpen && (
-        <div className="mt-3 text-label-strong text-sm font-normal space-y-5">
+        <div className="mt-3 md:mt-8 text-label-strong text-sm font-normal space-y-5 md:flex md:flex-col md:px-11 md:justify-center md:items-start md:w-full">
           <p>
             특산물 판매자 요청은 고객센터 메뉴 판매자 등록 요청을 눌러 구글폼을
             제출해 주시면 됩니다.
