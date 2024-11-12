@@ -35,7 +35,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
 
   const handleCancelClick = () => {
     setSelected(5);
-    cancelUserRef.current?.handleDeleteUser(); // CancelUser의 handleDeleteUser 메서드를 호출
+    cancelUserRef.current?.handleDeleteUser();
   };
 
   return (
@@ -61,7 +61,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
           </div>
         ))}
       </div>
-      <CancelUser ref={cancelUserRef} /> {/* ref 연결 */}
+      <CancelUser ref={cancelUserRef} />
     </div>
   );
 };

@@ -16,16 +16,16 @@ const CancelUser = forwardRef<CancelUserHandle>((_, ref) => {
   const handleDeleteUser = async () => {
     try {
       Swal.fire({
-        title: '탈퇴하시겠습니까?',
-        html: `<div id="swal2-html-container" class="swal2-html-container" style="padding:0 !important; margin:-1rem; font-size:16px;"> 탈퇴시, 계정 복구는 불가능합니다.</div>`,
+        title: '향그리움 탈퇴를 진행하시겠어요?',
+        html: `<div id="swal2-html-container" class="swal2-html-container" style="padding:0 !important; margin:-1rem; font-size:15px; color:#AFACA7"> 회원 탈퇴시, 계정 복구가 불가해요.</div>`,
         showCancelButton: true,
         cancelButtonColor: '#9C6D2E',
         confirmButtonColor: '#f2f2f2',
-        cancelButtonText: '취소',
+        cancelButtonText: '취소하기',
         confirmButtonText: '탈퇴하기',
         customClass: {
           title: 'text-xl mt-10 md:mb-[8px]',
-          popup: 'rounded-[16px]',
+          popup: 'rounded-[16px] w-[330px] h-[220px] bg-normal',
           actions: 'flex gap-3 mb-6 mt-9 md:mt-[40px] md:mb-[28px]',
           confirmButton:
             'text-status-negative py-3 px-4 rounded-[12px] w-[138px] m-0',
