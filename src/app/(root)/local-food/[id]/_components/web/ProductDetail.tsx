@@ -1,14 +1,14 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import Loading from '@/components/common/Loading';
 import supabase from '@/utils/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
+import PayButton from '@/components/ui/PayButton';
 import { useState } from 'react';
+import { AddCartButton } from '../../../_components/AddCartButton';
 import { CountButton } from '../CountButton';
 import { DeliveryInfo } from '../DeliveryInfo';
-import { AddCartButton } from '../../../_components/AddCartButton';
-import PayButton from '@/components/common/PayButton';
 import { DiscountAmount } from '../DiscountAmount';
 
 const DELIVERY = 2500;
