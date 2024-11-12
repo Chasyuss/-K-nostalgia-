@@ -17,15 +17,17 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 import { Tables } from '@/types/supabase';
 import { BsPersonExclamation } from 'react-icons/bs';
-import { debounce, throttle } from 'lodash';
-import ReportAlert from './ReportAlert';
+import { debounce } from 'lodash';
+// import ReportAlert from './ReportAlert';
 import { toast } from '@/components/ui/use-toast';
 import { BackButton } from '@/components/icons/BackButton';
 import ChatSendIcon from '@/components/icons/ChatSendIcon';
+import ReportAlert2 from './ReportAlert2';
 
 interface chatUserType {
   avatar: string;
   nickname: string;
+  reportedUserId : string[] | null;
 }
 
 interface chatMessageType {
@@ -36,6 +38,7 @@ interface chatMessageType {
   content: string;
   isReported: boolean | null;
   users: chatUserType;
+  reportedUserId : string[] | null;
 }
 
 interface SendChatProps {
@@ -46,17 +49,22 @@ interface SendChatProps {
   isOpen: boolean;
 }
 
-export function SendChat({
+interface HandleReport {
+  reportedContent: string;
+  reportedDetailContent: string;
+}
+
+const SendChat = ({
   selectedChatRoom,
   setSelectedChatRoom,
   isOpen
-}: SendChatProps) {
+}: SendChatProps): JSX.Element => {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
   const messageRef = useRef<HTMLInputElement>(null);
   const scrollDown = useRef<HTMLDivElement | null>(null);
   const [removeChatId, setRemoveChatId] = useState<number>(0);
-
+0
   // xss 공격 방지
   const encoded = (str: string) => {
     if (str === null) {
@@ -196,21 +204,54 @@ export function SendChat({
     setSelectedChatRoom(null);
   };
 
+  const cancelReport = () => {
+    setRemoveChatId(0);
+  };
+
   // 신고 알럿
   const onClickReortAlert = (itemId: number) => {
     setRemoveChatId(itemId);
   };
 
-  const handleReport = async () => {
+  const handleReport = async ({ reportedContent, reportedDetailContent } : HandleReport) => {
+    if (!user?.id || !removeChatId) {
+      console.error('유저 아이디가 없거나 챗 아이다가 없음');
+      return;
+    }
+
     const item = data?.find((x) => x.id === removeChatId);
+
     if (item) {
-      const response = await fetch('/api/chat/chat-send', {
+      const response = await fetch('/api/chat/admin', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify({
+          id : user?.id,
+          reportedUserId: item.user_id
+        })
       });
+
+
+      if (response.ok) { 
+        const responseReport = await fetch('/api/chat/admin/report', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            reporterId: user?.id,
+            reportedUserId: item.user_id,
+            reportedContent,
+            reportedDetailContent
+
+          })
+        });
+
+        if(!response.ok) {
+          throw Error('오류 발생');
+        }
 
       queryClient.invalidateQueries({
         queryKey: ['chatData', selectedChatRoom?.room_id]
@@ -218,17 +259,12 @@ export function SendChat({
 
       toast({
         variant: 'destructive',
-        description: '신고가 완료되었습니다.'
+        description: '사용자 신고가 접수되었습니다.'
       });
     }
     cancelReport();
+  }
   };
-
-  const cancelReport = () => {
-    setRemoveChatId(0);
-  };
-
-  console.log(ChatSendIcon);
 
   return (
     <DialogContent className="bg-normal w-[330px] h-[627px] rounded-2xl md:w-[479px] md:h-[710px]">
@@ -251,6 +287,12 @@ export function SendChat({
       >
         {data
           ?.filter((item) => !item.isReported)
+          .filter((item) => {
+            if (user?.id) {
+              return !item.users.reportedUserId?.includes(user.id);
+            }
+            return true;
+          })
           .map((item) => {
             return item.user_id === user?.id ? (
               // 나일 경우
@@ -304,9 +346,10 @@ export function SendChat({
             );
           })}
         {removeChatId > 0 && (
-          <ReportAlert
+          <ReportAlert2
             handleReport={handleReport}
             cancelReport={cancelReport}
+            setSelectedChatRoom={setSelectedChatRoom}
           />
         )}
       </div>
@@ -344,6 +387,6 @@ export function SendChat({
       </div>
     </DialogContent>
   );
-}
+ };
 
 export default SendChat;
