@@ -320,19 +320,25 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          reportedUserId: string[] | null
+          reportedContent: string | null
+          reportedDetailContent: string | null
+          reportedUserId: string | null
           reporterId: string | null
         }
         Insert: {
           created_at?: string
           id?: number
-          reportedUserId?: string[] | null
+          reportedContent?: string | null
+          reportedDetailContent?: string | null
+          reportedUserId?: string | null
           reporterId?: string | null
         }
         Update: {
           created_at?: string
           id?: number
-          reportedUserId?: string[] | null
+          reportedContent?: string | null
+          reportedDetailContent?: string | null
+          reportedUserId?: string | null
           reporterId?: string | null
         }
         Relationships: []
