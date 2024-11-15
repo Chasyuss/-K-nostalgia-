@@ -126,7 +126,7 @@ const ReviewProductDetail = ({ order }: Props) => {
           리뷰 작성하기
         </DialogTrigger>
         <div className="overflow-hidden">
-          <DialogContent className="bg-[#FAF8F5] min-w-[330px] w-[80%] h-[627px] rounded-2xl md:max-w-[608px] md:h-[840px] overflow-y-auto">
+          <DialogContent className="bg-[#FAF8F5] min-w-[330px] w-[80%] h-[627px] rounded-2xl md:max-w-[608px] md:h-[840px] md:overflow-y-auto">
             {selectedProduct ? (
               <ReviewForm
                 product={selectedProduct} //상품 정보
@@ -140,9 +140,9 @@ const ReviewProductDetail = ({ order }: Props) => {
               <>
                 <DialogHeader>
                   <DialogTitle className="w-full flex justify-center text-center text-[18px] font-semibold leading-[160%]">
-                    <h2 className="text-[18px] font-semibold flex justify-center pt-[12px] pb-[8px]">
+                    <p className="text-[18px] font-semibold flex justify-center pt-[12px] pb-[8px]">
                       리뷰 작성 가능 상품
-                    </h2>
+                    </p>
                   </DialogTitle>
                   <div className="flex flex-col">
                     <div className="flex-shrink-0">

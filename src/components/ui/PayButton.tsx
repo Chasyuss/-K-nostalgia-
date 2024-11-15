@@ -1,17 +1,27 @@
 'use client';
 
-//공용 컴포넌트로 작성 (버튼 컴포넌트)
-//feta : 결제할 상품 정보를 props로 받아, 결제 창 요청
+//장바구니, 특산물 상세 페이지에 위치하는 결제 버튼
 
 //update : 24.10.23
 
-import { useUser } from '@/hooks/useUser';
-import PortOne from '@portone/browser-sdk/v2';
-import dayjs from 'dayjs';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+
+import { useUser } from '@/hooks/useUser';
+
+import PortOne from '@portone/browser-sdk/v2';
+
+import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
-import { toast } from '../ui/use-toast';
+import { toast } from './use-toast';
+
+//TODO 로그인 안 된 상태일 때 처리 되어있는지 확인해야함
+
+//TODO 1. 로그인 안 되어있을 경우 처리
+
+//TODO 3. 필요한 상품 정보 가공 및 전역에 저장
+//   ->결제 페이지로 REDIRECT
+//  -> 정상 작동 확인 후, payment 페이지로 로직 옮기기
 
 type ProductProps = {
   id: string | null;
@@ -32,6 +42,17 @@ type ButtonStylesObj = {
 };
 
 const PayButton = ({ orderNameArr, product, text }: Props) => {
+  const { data: user } = useUser();
+
+  // TODO 클릭시 이벤트 내부로 옮겨야함
+  if (!user) {
+    return toast({
+      description: '로그인 후 이용 가능합니다'
+    });
+  }
+
+  //TODO product zustand에 저장
+
   const router = useRouter();
   const pathName = usePathname();
   const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false);
@@ -39,21 +60,16 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
   const date = dayjs(new Date(Date.now())).locale('ko').format('YYMMDD');
   const newPaymentId = `${date}-${uuidv4().slice(0, 13)}`; //주문 번호 생성
 
-  const DELIVERY_CHARGE: number = 2500;
-  const COUPON_DISCOUNT: number = 2000; //TODO 쿠폰 할인 적용 작업 끝나면 수정
-
-  //배송비 및 쿠폰 할인 적용 전 금액
-  const price: number = product.reduce((acc, item) => acc + item.amount, 0);
-
+  //TODO 쿠폰 할인 적용 작업 끝나면 넘겨받은 금액이 배송비, 쿠폰할인 포함 총 가격인지 재확인 할 것
+  const totalAmount: number = product.reduce(
+    (acc, item) => acc + item.amount,
+    0
+  );
   const totalQuantity = product.reduce((acc, item) => acc + item.quantity, 0);
-  const totalAmount = price + DELIVERY_CHARGE - COUPON_DISCOUNT; //TODO 쿠폰 할인 적용 작업 끝나면 수정
-
-  const { data: user } = useUser();
+  const isCouponApplied: boolean = true; //TODO 쿠폰 적용 여부 더미 (테스트용)
 
   const [lastCallTime, setLastCallTime] = useState(0);
   const THROTTLE_DELAY = 5000;
-
-  const isCouponApplied: boolean = true; //TODO 쿠폰 적용 여부 더미 (테스트용)
 
   useEffect(() => {
     //결제 창 활성화 시 PopStateEvent 제한
@@ -77,11 +93,6 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
 
   //결제 요청 함수 with throttling
   const onPayButtonClickThrottled = useCallback(async () => {
-    if (!user) {
-      return toast({
-        description: '로그인 후 이용 가능합니다'
-      });
-    }
     if (product.length === 0) {
       return toast({
         description: '구매할 상품을 선택 해 주세요'

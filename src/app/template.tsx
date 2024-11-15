@@ -2,11 +2,13 @@
 
 import DefaultAppLayout from '@/components/common/DefaultAppLayout';
 import DefaultWebLayout from '@/components/common/DefaultWebLayout';
+
 import useDeviceSize from '@/hooks/useDeviceSize';
-import React, { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
+
 import FirstLoading from '@/components/common/FirstLoading';
+import Cookies from 'js-cookie';
+import { usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const { isDesktop } = useDeviceSize();
@@ -97,12 +99,20 @@ export default function Template({ children }: { children: React.ReactNode }) {
     showNavigation = false;
   }
   // 주문 내역
-  else if (pathName === '/payment') {
+  else if (pathName === '/pay-history') {
     showHeader = true;
     headerTitle = '주문 내역';
     showSearch = false;
     showChat = false;
     showNavigation = true;
+  }
+  // 결제 페이지
+  else if (pathName === '/payment') {
+    showHeader = false;
+    showSearch = false;
+    showCart = false;
+    showNavigation = false;
+    showChat = false;
   }
   // 결제 완료 페이지
   else if (pathName === '/complete-payment') {
