@@ -1,7 +1,7 @@
 'use client';
 
 //feat : 결제 확인 -> 내역 supabase 저장
-//update : 24.10.23
+//update : 24.10.24
 
 import { toast } from '@/components/ui/use-toast';
 import supabase from '@/utils/supabase/client';
@@ -65,30 +65,54 @@ const CheckPaymentContent = () => {
           }
 
           //결제 내역 supabase 저장
-          await fetch('/api/payment/pay-supabase', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              id: uuidv4(),
-              payment_date: newPaidAt,
-              status,
-              order_name: orderName,
-              amount: totalQuantity,
-              price: amount.total,
-              user_id: customer.id,
-              user_name: customer.name,
-              payment_id: paymentId,
-              pay_provider: method.provider
-                ? method.provider
-                : method.card.name,
-              phone_number: customer.phoneNumber,
-              products,
-              user_email: customer.email,
-              is_CouponApplied: isCouponApplied === 'true' ? true : false
-            })
-          });
+          //내역 저장에 실패 -> 결제 취소(환불)후 이전 페이지로 REDIRECT
+          try {
+            await fetch('/api/payment/pay-supabase', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                id: uuidv4(),
+                payment_date: newPaidAt,
+                status,
+                order_name: orderName,
+                amount: totalQuantity,
+                price: amount.total,
+                user_id: customer.id,
+                user_name: customer.name,
+                payment_id: paymentId,
+                pay_provider: method.provider
+                  ? method.provider
+                  : method.card.name,
+                phone_number: customer.phoneNumber,
+                products,
+                user_email: customer.email,
+                is_CouponApplied: isCouponApplied === 'true' ? true : false
+              })
+            });
+          } catch (error) {
+            console.error('failed_update pay history,', error);
+
+            await fetch('/api/payment/transaction', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ paymentId: paymentId })
+            });
+
+            toast({
+              description: '결제 건 처리 과정에서 문제가 발생했습니다'
+            });
+            setTimeout(() => {
+              toast({
+                description: '결제 취소되었습니다, 잠시 후 다시 시도해주세요'
+              });
+            }, 1500);
+
+            return router.replace(`/local-food`);
+          }
 
           //쿠폰 사용 시 users 테이블 coupon 항목 비움
           if (isCouponApplied === 'true') {

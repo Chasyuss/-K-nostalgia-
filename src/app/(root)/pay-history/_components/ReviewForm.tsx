@@ -1,7 +1,7 @@
 //리뷰 작성 폼 (모달)
 //feat : 리뷰 작성, 수정, 삭제
 
-//update : 24.9.30
+//update : 24.10.30
 
 import {
   AlertDialog,
@@ -33,6 +33,7 @@ type Props = {
   setIsEditing: Dispatch<SetStateAction<boolean>>;
   isEditing: boolean;
 };
+
 const ReviewForm = ({
   product,
   onBack,
@@ -47,7 +48,15 @@ const ReviewForm = ({
   const date = dayjs(payment_date).locale('ko').format('YYYY. MM. DD');
   const { name, amount, quantity, id, user_id, review_id } = product;
 
-  //TODO 해당 useEffect 꼭 필요한지 재확인
+  const [reviewInputCount, setReviewInputCount] = useState(0);
+
+  //리뷰 textarea onchange 핸들러
+  const onReviewInputHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    setContent(e.target.value);
+    setReviewInputCount(e.target.value.length);
+  };
+
   useEffect(() => {
     setIsEditing(true);
     return () => setIsEditing(false);
@@ -160,9 +169,9 @@ const ReviewForm = ({
               >
                 <ChevronLeft size={34} />
               </button>
-              <h2 className="text-[18px] font-semibold flex justify-center leading-[160%]">
+              <p className="text-[18px] font-semibold flex justify-center leading-[160%]">
                 리뷰 작성하기
-              </h2>
+              </p>
               <div className="invisible">
                 <ChevronLeft size={34} />
               </div>
@@ -244,12 +253,18 @@ const ReviewForm = ({
             </div>
           </div>
         </div>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="상품에 대한 솔직한 리뷰를 작성해주세요 :)"
-          className="w-full h-[243px] p-4 border rounded focus:outline-none focus:ring-1 focus:ring-[#9C6D2E] resize-none md:h-[420px]"
-        />
+        <div className="relative">
+          <textarea
+            value={content}
+            onChange={onReviewInputHandler}
+            maxLength={1000}
+            placeholder="상품에 대한 솔직한 리뷰를 작성해주세요 :)"
+            className="w-full h-[243px] p-4 border-[1px] border-[#959595] rounded-[8px] focus:outline-none focus:ring-1 focus:ring-[#9C6D2E] resize-none md:h-[420px] placeholder:[#AFACA7]"
+          />
+          <p className="absolute right-2 bottom-2 text-[14px]">
+            {reviewInputCount}/1,000
+          </p>
+        </div>
       </div>
       <div className="flex -mx-4 w-[calc(100%+2rem)] shadow-custom pt-3 pb-6">
         <button

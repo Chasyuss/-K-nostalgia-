@@ -6,14 +6,14 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { BsChevronRight } from 'react-icons/bs';
-import PayHistoryList from '../payment/_components/PayHistoryList';
+import PayHistoryList from '../pay-history/_components/PayHistoryList';
 import CancelUser from './_components/CancelUser';
 import Coupon_mypage from './_components/Coupon_mypage';
+import GotoCustomer from './_components/GotoCustomer';
 import LikeMarket from './_components/LikeMarket';
 import Logout from './_components/Logout';
 import OrderList_mypage from './_components/OrderList_mypage';
 import Profile from './_components/Profile';
-import GotoCustomer from './_components/GotoCustomer';
 
 const Mypage = () => {
   const { data: user, isLoading, error } = useUser();

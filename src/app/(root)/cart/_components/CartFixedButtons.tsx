@@ -1,4 +1,4 @@
-import PayButton from '@/components/common/PayButton';
+import PayButton from '@/components/ui/PayButton';
 import { Tables } from '@/types/supabase';
 
 type CartButtonProps = {

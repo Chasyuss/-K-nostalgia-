@@ -322,7 +322,7 @@ export type Database = {
           id: number
           reportedContent: string | null
           reportedDetailContent: string | null
-          reportedUserId: string[] | null
+          reportedUserId: string | null
           reporterId: string | null
         }
         Insert: {
@@ -330,7 +330,7 @@ export type Database = {
           id?: number
           reportedContent?: string | null
           reportedDetailContent?: string | null
-          reportedUserId?: string[] | null
+          reportedUserId?: string | null
           reporterId?: string | null
         }
         Update: {
@@ -338,7 +338,7 @@ export type Database = {
           id?: number
           reportedContent?: string | null
           reportedDetailContent?: string | null
-          reportedUserId?: string[] | null
+          reportedUserId?: string | null
           reporterId?: string | null
         }
         Relationships: []
