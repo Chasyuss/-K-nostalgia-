@@ -23,6 +23,11 @@ import { toast } from './use-toast';
 //   ->결제 페이지로 REDIRECT
 //  -> 정상 작동 확인 후, payment 페이지로 로직 옮기기
 
+//함수 구분할 거면 비지니스 로직 의존성 빼고, 기능적 구현만 하고
+//비니지스 로직은 따로 받아서 할 것
+
+// ** 비지니스 로직, 구체적인 것에 의존하면 안 됨
+
 type ProductProps = {
   id: string | null;
   name: string | null;

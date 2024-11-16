@@ -7,8 +7,9 @@ interface ProductItem{
   orderNameArr: string[]
   quantity: number
 }
+//이름 변경하셈
 export const usePaymentStore  = create((set)=>({
-  product:[],
+  product:null, //객체로저장? 배열로 저장?
   // setProduct: (state)=>{}
 }))
 
