@@ -428,6 +428,7 @@ export type Database = {
       }
       users: {
         Row: {
+          address: Json | null
           avatar: string | null
           coupon: string | null
           created_at: string
@@ -436,9 +437,11 @@ export type Database = {
           name: string | null
           nickname: string | null
           password: string | null
+          phoneNumber: string | null
           reportedUserId: string[] | null
         }
         Insert: {
+          address?: Json | null
           avatar?: string | null
           coupon?: string | null
           created_at?: string
@@ -447,9 +450,11 @@ export type Database = {
           name?: string | null
           nickname?: string | null
           password?: string | null
+          phoneNumber?: string | null
           reportedUserId?: string[] | null
         }
         Update: {
+          address?: Json | null
           avatar?: string | null
           coupon?: string | null
           created_at?: string
@@ -458,6 +463,7 @@ export type Database = {
           name?: string | null
           nickname?: string | null
           password?: string | null
+          phoneNumber?: string | null
           reportedUserId?: string[] | null
         }
         Relationships: []
