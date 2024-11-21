@@ -1,13 +1,13 @@
-import React from 'react';
-import CustomerHeader from './_components/CustomerHeader';
+'use client';
+import React, { useState } from 'react';
 import CustomerContent from './_components/CustomerContent';
 
 const CustomerPage = () => {
   return (
-    <div>
-      {' '}
-      {/* <CustomerHeader /> */}
-      <CustomerContent />
+    <div className="md:flex md:flex-row">
+      <div className="md:hidden">
+        <CustomerContent />
+      </div>
     </div>
   );
 };

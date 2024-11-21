@@ -9,8 +9,8 @@ const Announcement: React.FC = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   return (
-    <div className="px-4 py-6 border-b border-[#E0E0E0] md:hidden">
-      <div className="mb-7 text-label-strong text-2xl font-semibold mt-10">
+    <div className="px-4 py-6 border-b border-[#E0E0E0] md:max-w-[999px]">
+      <div className="mb-7 text-label-strong text-2xl font-semibold mt-10 md:mt-14">
         {' '}
         자주 묻는 질문{' '}
       </div>
@@ -31,7 +31,7 @@ const Announcement: React.FC = () => {
       </div>
 
       {isOpen && (
-        <div className="mt-3 text-label-strong text-sm font-normal space-y-5">
+        <div className="mt-3 md:mt-8 text-label-strong text-sm font-normal space-y-5 md:flex md:flex-col md:px-11 md:justify-center md:items-start md:w-full">
           <p>
             특산물 판매자 요청은 고객센터 메뉴 판매자 등록 요청을 눌러 구글폼을
             제출해 주시면 됩니다.
