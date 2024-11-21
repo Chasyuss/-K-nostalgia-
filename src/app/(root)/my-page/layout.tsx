@@ -8,6 +8,7 @@ import RecentMarket from './_components/RecentMarket';
 
 function MyPageLayout({ children }: PropsWithChildren) {
   const { isDesktop } = useDeviceSize();
+
   return (
     <div
       className={`max-w-[1280px] mx-auto md:px-4 ${isDesktop ? 'flex' : ''}`}
