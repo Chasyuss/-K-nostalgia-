@@ -41,13 +41,13 @@ const PaymentHeader = () => {
       let blinkCount = 0;
 
       const interValid = setInterval(() => {
-        setIconHighLight((prev) => !prev);
         blinkCount++;
+        setIconHighLight((prev) => !prev);
 
-        if (blinkCount === 10) {
+        if (blinkCount === 8) {
           clearInterval(interValid);
         }
-      }, 500);
+      }, 1000);
 
       return () => {
         clearInterval(interValid);
