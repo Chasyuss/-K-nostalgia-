@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { BackButton } from '@/components/icons/BackButton';
 import InfoIcon from '@/components/icons/InfoIcon';
@@ -11,9 +11,15 @@ const PaymentHeader = () => {
 
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [iconHighLight, setIconHighLight] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleTooltipToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    if (intervalRef.current) {
+      setIconHighLight(false);
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     setTooltipVisible((prev) => !prev);
   };
 
@@ -31,7 +37,7 @@ const PaymentHeader = () => {
     };
   }, [isTooltipVisible]);
 
-  //페이지 첫 방문시 info 아이콘 깜빡임(강조) 효과
+  //툴팁 본 적 없을시에 info 아이콘 깜빡임(강조) 효과
   useEffect(() => {
     const isVisit = localStorage.getItem('isVisit');
 
@@ -40,22 +46,26 @@ const PaymentHeader = () => {
 
       let blinkCount = 0;
 
-      const interValid = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         blinkCount++;
         setIconHighLight((prev) => !prev);
 
         if (blinkCount === 8) {
-          clearInterval(interValid);
+          if (intervalRef.current) {
+            setIconHighLight(false);
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
         }
       }, 1000);
 
       return () => {
-        clearInterval(interValid);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
       };
     }
-    return () => {
-      localStorage.removeItem('isVisit');
-    };
   }, []);
 
   return (
