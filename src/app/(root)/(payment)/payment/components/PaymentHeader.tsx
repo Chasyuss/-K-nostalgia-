@@ -1,3 +1,6 @@
+//  주문 페이지 앱 헤더
+//  update: 24.12.3
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -14,7 +17,10 @@ const PaymentHeader = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleTooltipToggle = (e: React.MouseEvent<HTMLDivElement>) => {
+    localStorage.setItem('isVisit', 'true');
+
     e.stopPropagation();
+
     if (intervalRef.current) {
       setIconHighLight(false);
       clearInterval(intervalRef.current);
@@ -37,13 +43,11 @@ const PaymentHeader = () => {
     };
   }, [isTooltipVisible]);
 
-  //툴팁 본 적 없을시에 info 아이콘 깜빡임(강조) 효과
+  //툴팁 본 적 없을시에 info 아이콘 하이라이팅
   useEffect(() => {
     const isVisit = localStorage.getItem('isVisit');
 
     if (!isVisit) {
-      localStorage.setItem('isVisit', 'true');
-
       let blinkCount = 0;
 
       intervalRef.current = setInterval(() => {
