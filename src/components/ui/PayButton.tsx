@@ -42,7 +42,7 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
   const router = useRouter();
   const { data: nowUser } = useUser(); //getUser-query
 
-  const { setOrderName, setTotalAmount, setProducts, setCustomer } =
+  const { setOrderName, setTotalAmount, setProducts } =
     usePaymentRequestStore(); //zustand
 
   //총액 계산 함수
@@ -61,14 +61,14 @@ const PayButton = ({ orderNameArr, product, text }: Props) => {
     setOrderName(orderNameArr.join(','));
     setProducts(product as any);
 
-    const { id, name, phoneNumber, email, address } = nowUser;
-    setCustomer({
-      customerId: id,
-      fullName: name as string,
-      phoneNumber: phoneNumber as string,
-      email: email as string,
-      address: address as object
-    });
+    // const { id, name, phoneNumber, email, address } = nowUser;
+    // setCustomer({
+    //   customerId: id,
+    //   fullName: name as string,
+    //   phoneNumber: phoneNumber as string,
+    //   email: email as string,
+    //   address: address as object
+    // });
   };
 
   //전역 관리 이후 redirect
