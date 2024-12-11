@@ -1,5 +1,5 @@
+import DeliveryAddress from './(address)/DeliveryAddress ';
 import CouponInPaymentPage from './CouponInPaymentPage';
-import DeliveryAddress from './DeliveryAddress ';
 import OrderProducts from './OrderProducts';
 import OrderSummary from './OrderSummary';
 import PaymentHeader from './PaymentHeader';
@@ -15,7 +15,6 @@ const OrderPageContainer = () => {
       <DeliveryAddress />
 
       {/* 주문 상품 */}
-      {/* TODO 1. */}
       <OrderProducts />
 
       {/* 할인 쿠폰 */}
@@ -27,6 +26,7 @@ const OrderPageContainer = () => {
       <PaymentMethodSelect />
 
       {/* 결제 요약(가격) 및 결제 버튼 */}
+      {/* 결제 요청 로직 분리 이후 테스트 케이스가 필요할 지 고려 */}
       {/* TODO 4. */}
       <OrderSummary />
     </div>
