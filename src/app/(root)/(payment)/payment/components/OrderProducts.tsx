@@ -25,12 +25,11 @@ const OrderProducts = () => {
           description: '잠시 후 다시 시도해주세요'
         });
       }, 2000);
+      resetState();
+      usePaymentRequestStore.persist.clearStorage();
+
+      router.back();
     }
-
-    resetState();
-    usePaymentRequestStore.persist.clearStorage();
-
-    router.back();
   }, []);
 
   return (
