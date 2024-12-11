@@ -1,14 +1,37 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
 import DeliveryTruck from '@/components/icons/DeliveryTruck';
 import { productImgObject } from '@/hooks/payment/getProductImage';
 import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
 
+import { toast } from '@/components/ui/use-toast';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 
 const OrderProducts = () => {
-  const { products } = usePaymentRequestStore();
+  const router = useRouter();
+  const { products, resetState } = usePaymentRequestStore();
+
+  useEffect(() => {
+    if (products[0].id === '') {
+      toast({
+        description: '상품 정보를 가져오는데에 실패했습니다'
+      });
+      setTimeout(() => {
+        toast({
+          description: '잠시 후 다시 시도해주세요'
+        });
+      }, 2000);
+    }
+
+    resetState();
+    usePaymentRequestStore.persist.clearStorage();
+
+    router.back();
+  }, []);
 
   return (
     <div className="bg-white p-4 rounded shadow mb-4 flex flex-col gap-2">
@@ -31,7 +54,7 @@ const OrderProducts = () => {
             18시 이전 주문시
           </span>
           <span className="text-sm text-primary-20">
-            {dayjs().add(1, 'day').format('MM/DD(ddd)')}
+            {dayjs().add(1, 'day').locale('ko').format('MM/DD(ddd)')}
             도착
           </span>
         </p>
