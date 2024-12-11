@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { DialogHeader } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
-import { imageSrc } from '@/hooks/payment/getProductImage';
+import { productImgObject } from '@/hooks/payment/getProductImage';
 import supabase from '@/utils/supabase/client';
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import dayjs from 'dayjs';
@@ -188,7 +188,7 @@ const ReviewForm = ({
             <div>
               <img
                 className="w-[64px] h-[64px] rounded-[8px] md:w-[88px] md:h-[88px]"
-                src={imageSrc[name]}
+                src={productImgObject[name]}
                 alt={name}
               />
             </div>

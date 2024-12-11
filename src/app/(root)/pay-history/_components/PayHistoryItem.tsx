@@ -5,7 +5,7 @@
 
 import { toast } from '@/components/ui/use-toast';
 import { usePaymentCancellation } from '@/hooks/payment/canclePayWithDbUpdate';
-import { imageSrc } from '@/hooks/payment/getProductImage';
+import { productImgObject } from '@/hooks/payment/getProductImage';
 import useDeletePayHistory from '@/hooks/payment/useDeletePayHistory';
 import {
   BaseOrderInPayHistory,
@@ -139,7 +139,7 @@ const PayHistoryItem = ({ orderList, date }: Props) => {
                   }`}
                 >
                   <img
-                    src={imageSrc[product.name]}
+                    src={productImgObject[product.name]}
                     className="w-[64px] h-[64px] object-cover rounded-[8px] xs:w-[100px] xs:h-[100px]"
                     alt={`${product.name}`}
                   />

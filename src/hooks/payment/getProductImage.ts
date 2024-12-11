@@ -1,13 +1,10 @@
-//특산품 이름을 key로, 이미지 url을 value로 갖는 객체
-//상품이 추가될 경우 직접 추가해야함
-//후에 상품이 너무 많아지면 db에서 가져오는 형식으로 바꾸는 게 좋을 것
-
 //update : 24.9.30
 
-type ImageSrc = {
+type productImgObject = {
   [key: string]: string
 }
-export const imageSrc : ImageSrc  = {
+
+export const productImgObject : productImgObject  = {
      '옥천 복숭아': 
        'https://kejbzqdwablccrontqrb.supabase.co/storage/v1/object/public/local-food/product1.jpg',
 
