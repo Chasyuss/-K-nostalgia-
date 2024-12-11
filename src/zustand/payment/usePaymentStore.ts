@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from 'zustand/middleware';
+
 
 //결제 요청 정보에 필요한 값 전역 저장
 //update: 24.11.20
@@ -21,17 +23,17 @@ type State = {
   orderName: string;
   totalAmount: number;
   products: Products;
-  customer: Customer;
+  // customer: Customer;
 }
 type Actions = {
   setOrderName: (orderName: string) => void;
   setTotalAmount: (amount: number) => void;
   setProducts: (products: Products) => void;
-  setCustomer: (customer: Customer) => void;
+  // setCustomer: (customer: Customer) => void;
   resetState: () => void;
 }
 
-const initialState = {
+const initialState : State = {
   orderName: '',
   totalAmount: 0,
   products:[{
@@ -40,20 +42,30 @@ const initialState = {
     amount: 0,
     quantity: 0
   }],
-  customer:{
-    customerId: '',
-    fullName: '',
-    phoneNumber: '',
-    email: '',
-    address:{}
-  }
+  // customer:{
+  //   customerId: '',
+  //   fullName: '',
+  //   phoneNumber: '',
+  //   email: '',
+  //   address:{}
+  // }
 }
-export const usePaymentRequestStore  = create<State&Actions>((set)=>({
-  ...initialState,
-  setOrderName: (orderName) => set((state) => ({ ...state, orderName })),
-  setTotalAmount: (amount) => set((state) => ({ ...state, totalAmount: amount })),
-  setProducts: (products) => set((state) => ({ ...state, products })),
-  setCustomer: (customer) => set((state) => ({ ...state, customer })),
-  resetState: () => set(initialState),
-}))
 
+export const usePaymentRequestStore = create<State & Actions>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      setOrderName: (orderName) => set((state) => ({ ...state, orderName })),
+      setTotalAmount: (amount) => set((state) => ({ ...state, totalAmount: amount })),
+      setProducts: (products) => set((state) => ({ ...state, products })),
+      resetState: () => set(initialState),
+    }),
+    {
+      name: "payment-request-storage", 
+      storage: createJSONStorage(()=>sessionStorage),
+      //스토리지 비우기 : usePaymentRequestStore.persist.clearStorage()
+    }
+  )
+);
+
+  // setCustomer: (customer) => set((state) => ({ ...state, customer })),
