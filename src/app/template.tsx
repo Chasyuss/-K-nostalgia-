@@ -90,6 +90,22 @@ export default function Template({ children }: { children: React.ReactNode }) {
     headerTitle = isGuest ? '로그인' : '';
     showChat = false;
   }
+  // 설정 페이지
+  else if (pathName === '/my-page/setting') {
+    headerTitle = '설정';
+    showHeader = true;
+    showSearch = false;
+    showCart = false;
+    // showNavigation = false;
+  }
+  //배송지 관리 페이지
+  else if (pathName === '/my-page/setting/delivery-address') {
+    showHeader = false;
+    showSearch = false;
+    showCart = false;
+    showNavigation = false;
+    showChat = false;
+  }
   // 장바구니
   else if (pathName === '/cart') {
     headerTitle = '장바구니';
