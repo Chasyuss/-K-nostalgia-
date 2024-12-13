@@ -1,12 +1,12 @@
 'use client';
 
-import { IconType } from 'react-icons/lib';
 import { usePathname, useRouter } from 'next/navigation';
-import KNostalgiaIcon2 from '../icons/KNostalgiaIcon2';
+import { IconType } from 'react-icons/lib';
 import KNostalgiaIcon1 from '../icons/KNostalgiaIcon1';
-import { TraditionalMarketIcon } from '../icons/TraditionalMarketIcon';
+import KNostalgiaIcon2 from '../icons/KNostalgiaIcon2';
 import { LocalFoodIcon } from '../icons/LocalFoodIcon';
 import { MyProfile } from '../icons/MyProfile';
+import { TraditionalMarketIcon } from '../icons/TraditionalMarketIcon';
 
 type NaviList = {
   label: string;
@@ -60,7 +60,9 @@ const Navigation = () => {
           }`}
           onClick={() => handleNavigationClick(item.path)}
         >
-          {pathname === item.path ? (
+          {/* /my-page/setting 같은 path name이 생길 때, 아이콘 활성화가 안 되어서 */}
+          {/* 코드 수정했습니다 - 종훈 */}
+          {pathname.includes(item.path) ? (
             <item.activeIcon fill="#9C6D2E" />
           ) : (
             <item.icon />
