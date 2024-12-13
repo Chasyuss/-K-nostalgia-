@@ -4,7 +4,6 @@ const DeliveryAddress = () => {
   return (
     <div className="bg-white p-4 flex flex-col gap-2 rounded shadow mb-4">
       {/* 배송지 추가 */}
-      {/* TODO 배송지 추가 구현하면서, 컴포넌트/ 로직 분리 고민  */}
       {/*  배송지 추가에 유효성 검사 로직 별도로 뺄지 고려 */}
       <div className="flex flex-col justify-between items-center">
         <h2 className="w-full text-label-strong text-[18px] font-semibold pb-2">
@@ -13,6 +12,7 @@ const DeliveryAddress = () => {
 
         <button className="w-full flex justify-center items-center gap-2 px-4 py-3 h-10 border-[1px] border-primary-20 text-primary-20 rounded-[8px]">
           <PlusIcon color={'#9C6D2E'} />
+          {/* TODO 배송지 페이지 - 배송지 추가 페이지로 이동 (현재 pathname, zustand state 유지되어야함) */}
           <p className="font-semibold">배송지 추가하기</p>
         </button>
       </div>
@@ -30,7 +30,7 @@ const DeliveryAddress = () => {
       <hr className="h-2" />
 
       {/* 여기부터 */}
-      {/* input formdata로 받기 */}
+      {/* input formData로 받기 */}
       <textarea
         className="w-full border border-gray-300 rounded mt-2 p-2 text-sm"
         placeholder="요청사항을 입력해주세요 :)"
