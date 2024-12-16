@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { imageSrc } from '@/hooks/payment/getProductImage';
+import { productImgObject } from '@/hooks/payment/getProductImage';
 import { Order, Product } from '@/types/payHistory';
 import supabase from '@/utils/supabase/client';
 import dayjs from 'dayjs';
@@ -158,7 +158,7 @@ const ReviewProductDetail = ({ order }: Props) => {
                             <div>
                               <img
                                 className="rounded-[8px] w-[64px] h-[64px] md:w-[88px] md:h-[88px]"
-                                src={imageSrc[name]}
+                                src={productImgObject[name]}
                                 alt={name}
                               />
                             </div>

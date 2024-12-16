@@ -5,7 +5,7 @@
 //update : 24.8.27
 
 import Loading from '@/components/common/Loading';
-import { imageSrc } from '@/hooks/payment/getProductImage';
+import { productImgObject } from '@/hooks/payment/getProductImage';
 import { useGetPaymentHistory } from '@/hooks/payment/useGetPaymentHistory';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -79,7 +79,7 @@ const CompletePaymentContent = () => {
                       className="flex gap-[12px] border-b-2 border-[#F2F2F2] pb-[16px] px-[16px]"
                     >
                       <Image
-                        src={imageSrc[name]}
+                        src={productImgObject[name]}
                         width={64}
                         height={64}
                         alt={name}
