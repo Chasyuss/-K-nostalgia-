@@ -1,4 +1,5 @@
 import PlusIcon from '@/components/icons/PlusIcon';
+import Link from 'next/link';
 
 const DeliveryAddress = () => {
   return (
@@ -10,11 +11,13 @@ const DeliveryAddress = () => {
           배송지
         </h2>
 
-        <button className="w-full flex justify-center items-center gap-2 px-4 py-3 h-10 border-[1px] border-primary-20 text-primary-20 rounded-[8px]">
-          <PlusIcon color={'#9C6D2E'} />
-          {/* TODO 배송지 페이지 - 배송지 추가 페이지로 이동 (현재 pathname, zustand state 유지되어야함) */}
-          <p className="font-semibold">배송지 추가하기</p>
-        </button>
+        <Link href={'/my-page/setting/delivery-address'} className="w-full">
+          <button className="w-full flex justify-center items-center gap-2 px-4 py-3 h-10 border-[1px] border-primary-20 text-primary-20 rounded-[8px]">
+            <PlusIcon color={'#9C6D2E'} />
+            {/* TODO 배송지 페이지 - 배송지 추가 페이지로 이동 (현재 pathname, zustand state 유지되어야함) */}
+            <p className="font-semibold">배송지 추가하기</p>
+          </button>
+        </Link>
       </div>
 
       <div className="w-full h-[2px] my-1 bg-[#F2F2F2]"></div>
