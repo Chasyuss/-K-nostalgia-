@@ -1,23 +1,35 @@
-//  주문 페이지 앱 헤더
-//  update: 24.12.3
+// 백버튼, info 아이콘 + 툴팁 토글링이 들어있는 앱 헤더
+// 주문페이지(/payment), 배송지 페이지(/my-page/setting/delivery-address)에서 사용
 
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-
 import { BackButton } from '@/components/icons/BackButton';
 import InfoIcon from '@/components/icons/InfoIcon';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
 
-const PaymentHeader = () => {
+type Props = {
+  //toolTipContentArray: 툴팁 내부 내용. 줄바꿈 단위로 나눠서 배열에 넣을 것
+  toolTipContentArray: string[];
+  //isIncludeIconHighlighting : info 아이콘 하이라이팅(강조 효과 여부)
+  isIncludeIconHighlighting: boolean;
+};
+
+const HeaderWithInfoIcon = ({
+  toolTipContentArray,
+  isIncludeIconHighlighting
+}: Props) => {
   const router = useRouter();
+  const pathName = usePathname();
 
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [iconHighLight, setIconHighLight] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleTooltipToggle = (e: React.MouseEvent<HTMLDivElement>) => {
-    localStorage.setItem('isVisit', 'true');
+    if (isIncludeIconHighlighting) {
+      localStorage.setItem(`isVisit-${pathName}`, 'true');
+    }
 
     e.stopPropagation();
 
@@ -29,7 +41,6 @@ const PaymentHeader = () => {
     setTooltipVisible((prev) => !prev);
   };
 
-  // 화면 외부 클릭 시 툴팁 닫기
   const handleClickOutsideInfoIcon = () => {
     setTooltipVisible(false);
   };
@@ -43,34 +54,33 @@ const PaymentHeader = () => {
     };
   }, [isTooltipVisible]);
 
-  //툴팁 본 적 없을시에 info 아이콘 하이라이팅
+  // 하이라이팅 로직
   useEffect(() => {
-    const isVisit = localStorage.getItem('isVisit');
+    if (isIncludeIconHighlighting) {
+      const isVisit = localStorage.getItem(`isVisit-${pathName}`);
+      if (!isVisit) {
+        let blinkCount = 0;
+        intervalRef.current = setInterval(() => {
+          blinkCount++;
+          setIconHighLight((prev) => !prev);
+          if (blinkCount === 10) {
+            if (intervalRef.current) {
+              setIconHighLight(false);
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+          }
+        }, 1000);
 
-    if (!isVisit) {
-      let blinkCount = 0;
-
-      intervalRef.current = setInterval(() => {
-        blinkCount++;
-        setIconHighLight((prev) => !prev);
-
-        if (blinkCount === 8) {
+        return () => {
           if (intervalRef.current) {
-            setIconHighLight(false);
             clearInterval(intervalRef.current);
             intervalRef.current = null;
           }
-        }
-      }, 1000);
-
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
-      };
+        };
+      }
     }
-  }, []);
+  }, [isIncludeIconHighlighting]);
 
   return (
     <div className="flex justify-between items-center mb-4 md:mt-16 m-1">
@@ -95,10 +105,11 @@ const PaymentHeader = () => {
           {isTooltipVisible && (
             <div className="absolute top-full transform -translate-x-1/2 mt-3 right-[-9rem]">
               <div className="relative bg-[#9C6D2E] p-4 w-[274px] text-white text-sm rounded-[8px] shadow-lg select-none ">
-                해당 결제는 가결제입니다. <br />
-                결제 당일 23시-0시 이내 자동 환불됩니다. <br />
-                직접 환불을 원할 시 주문 내역에서 주문 취소 <br />
-                버튼을 통해 환불 가능합니다.
+                {toolTipContentArray.map((line, index) => (
+                  <div key={index}>
+                    {line} <br />
+                  </div>
+                ))}
                 {/* 화살표 */}
                 <div
                   className="absolute top-[-0.4rem] right-[2%] transform -translate-x-1/2 w-0 h-0"
@@ -117,4 +128,4 @@ const PaymentHeader = () => {
   );
 };
 
-export default PaymentHeader;
+export default HeaderWithInfoIcon;
