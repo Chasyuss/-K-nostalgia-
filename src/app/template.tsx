@@ -100,11 +100,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }
   //배송지 관리 페이지
   else if (pathName === '/my-page/setting/delivery-address') {
-    showHeader = false;
+    showHeader = true;
+    headerTitle = '배송지 관리';
     showSearch = false;
     showCart = false;
     showNavigation = false;
-    showChat = false;
   }
   // 장바구니
   else if (pathName === '/cart') {
