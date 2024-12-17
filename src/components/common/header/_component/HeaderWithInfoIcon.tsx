@@ -1,5 +1,4 @@
 // 백버튼, info 아이콘 + 툴팁 토글링이 들어있는 앱 헤더
-// 주문페이지(/payment), 배송지 페이지(/my-page/setting/delivery-address)에서 사용
 
 'use client';
 
@@ -83,7 +82,7 @@ const HeaderWithInfoIcon = ({
   }, [isIncludeIconHighlighting]);
 
   return (
-    <div className="flex justify-between items-center mb-4 md:mt-16 m-1">
+    <header className="flex justify-between items-center mb-4 md:mt-16 m-1">
       {/* 뒤로가기 버튼 */}
       <button onClick={() => router.back()}>
         <BackButton />
@@ -124,7 +123,7 @@ const HeaderWithInfoIcon = ({
           )}
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
