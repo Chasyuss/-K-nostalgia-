@@ -1,17 +1,23 @@
 // 배송지 관리 페이지
 
-import HeaderWithInfoIcon from '@/components/common/header/_component/HeaderWithInfoIcon';
+import AddNewAddressButton from './_components/AddNewAddressButton';
+import NoDeliveryAddress from './_components/NoDeliveryAddress';
 
 const DeliveryAddressManagement = () => {
-  //헤더 info 아이콘에 전달할 툴팁 내용
-  const toolTipContentArray = [''];
+  const hasNoAddress = true;
   return (
-    <div className="max-w-md mx-auto p-4 bg-normal">
-      <HeaderWithInfoIcon
-        toolTipContentArray={toolTipContentArray}
-        isIncludeIconHighlighting={false}
-      />
-    </div>
+    <>
+      {!hasNoAddress ? (
+        <NoDeliveryAddress />
+      ) : (
+        <div className="max-w-md mx-auto flex flex-col p-4 bg-normal">
+          {/* 내부 요소 들어갈 부분 */}
+        </div>
+      )}
+      <div className="p-4 flex justify-center bg-white shadow-md fixed bottom-0 w-full">
+        <AddNewAddressButton />
+      </div>
+    </>
   );
 };
 
