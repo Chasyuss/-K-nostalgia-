@@ -16,9 +16,9 @@ export const POST = async (request: NextRequest) => {
 
   if (error) {
     console.error(error);
-    return NextResponse.json({ status: '500', message: error.message });
+    return NextResponse.json({ status: error.code, message: error.message });
   }
-  return NextResponse.json({ status: '200' });
+  return NextResponse.json({ status: 200 });
 };
 
 export const GET = async (request: NextRequest) => {
@@ -44,12 +44,12 @@ export const GET = async (request: NextRequest) => {
       
     if (error) {
       console.error(error);
+      return NextResponse.json({status: error.code, message: error.message})
     }
 
     return NextResponse.json(data);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: '예기치 않은 오류가 발생했습니다' }, { status: 500 });
   }
 };
 
@@ -64,11 +64,11 @@ export const PUT = async(request: NextRequest)=>{
     .eq('payment_id',payment_id)
 
     if (error) {
-      throw error;
+      console.error(error);
+      return NextResponse.json({status: error.code, message: error.message})
     }
     return NextResponse.json({ message: '주문 내역 업데이트 완료' }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: '주문 내역 업데이트 중 오류 발생' }, { status: 500 });
   }
 }
