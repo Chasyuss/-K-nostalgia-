@@ -11,7 +11,10 @@ const DeliveryAddress = () => {
           배송지
         </h2>
 
-        <Link href={'/my-page/setting/delivery-address'} className="w-full">
+        <Link
+          href={'/my-page/setting/delivery-address/add-new'}
+          className="w-full"
+        >
           <button className="w-full flex justify-center items-center gap-2 px-4 py-3 h-10 border-[1px] border-primary-20 text-primary-20 rounded-[8px]">
             <PlusIcon color={'#9C6D2E'} />
             {/* TODO 배송지 페이지 - 배송지 추가 페이지로 이동 (현재 pathname, zustand state 유지되어야함) */}
