@@ -42,7 +42,7 @@ export function validateEmail(email: string): boolean {
     if(number.slice(0,3) !== '010'){
       return false
     }
-
+    
     if(number.length < 11){
       return false
     }
