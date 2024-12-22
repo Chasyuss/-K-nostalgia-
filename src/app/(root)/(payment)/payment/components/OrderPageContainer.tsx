@@ -15,14 +15,13 @@ const OrderPageContainer = () => {
   ];
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-normal">
+    <main className="max-w-md mx-auto p-4 bg-normal">
       <HeaderWithInfoIcon
         toolTipContentArray={toolTipContentArray}
         isIncludeIconHighlighting={true}
       />
 
       {/* 배송지 */}
-      {/* TODO 2. */}
       <DeliveryAddress />
 
       {/* 주문 상품 */}
@@ -40,7 +39,7 @@ const OrderPageContainer = () => {
       {/* 결제 요청 로직 분리 이후 테스트 케이스가 필요할 지 고려 */}
       {/* TODO 4. */}
       <OrderSummary />
-    </div>
+    </main>
   );
 };
 
