@@ -1,6 +1,14 @@
 import supabase from "@/utils/supabase/client";
 import { NextRequest, NextResponse } from "next/server";
 
+const errorHandling = (error :any) =>{
+  console.error(error);
+  return NextResponse.json({
+    status: error.code, 
+    message: error.message
+  })
+}
+
 export const PATCH = async(request : NextRequest)=>{
   //  response 타입 {
   //     addressName: string; // 배송지명
@@ -11,20 +19,51 @@ export const PATCH = async(request : NextRequest)=>{
   //     isDefaultAddress: boolean; // 기본 배송지 설정 여부
   //     id?: string; //유저 id
   //   };
+
   const response = await request.json();
+  const {id, isDefaultAddress, ...rest} = response;
 
-  //id 선언 후 객체에서 제거
-  const id = response.id
-  delete response.id;
+  //기존 값 가져오기
+  const {data : prevDefaultAddress} = await supabase.from('users').select('defaultAddress').eq('id', id)
+  const {data : prevAddresses} = await supabase.from('users').select('addresses').eq('id', id)
 
-  const { error} = await supabase.from('users').update({address:response}).eq('id', id);
-
-  if(error) {
-    console.error(error);
-    return NextResponse.json({
-      status: error.code, 
-      message: error.message
-    })
+  //기본 배송지로 설정
+  if(isDefaultAddress){
+    //기존 값이 NULL이면 defaultAddress에 바로 추가
+    if(prevDefaultAddress === null){
+      const {error} = await supabase.from('users').update({defaultAddress : {...rest}}).eq('id', id)
+      if(error){
+        errorHandling(error)
+      }
+    }
+    //기존 값이 null이 아니면 기존 기본 배송지를 addresses에 추가 후 
+    //입력 값 defaultAddress에 추가
+    if(prevDefaultAddress !== null){
+      const {error} = await supabase
+        .from('users')
+        .update({
+          addresses: prevAddresses !== null ? [...prevAddresses, {...prevDefaultAddress}]: [{...prevDefaultAddress}],
+          defaultAddress: {...rest}
+        })
+        .eq('id', id)
+      if(error){
+        errorHandling(error)
+      }
+    }
   }
+  //배송지 목록에 추가
+  if(!isDefaultAddress){
+    const {error} = await supabase
+      .from('users')
+      .update({
+        addresses: prevAddresses !== null ? [...prevAddresses, {...rest}]: [{...rest}]
+      })
+      .eq('id', id)
+      if(error){
+        errorHandling(error)
+      }
+  }
+
   return NextResponse.json({status: 200})
 }
+

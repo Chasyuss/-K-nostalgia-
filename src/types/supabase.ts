@@ -428,10 +428,11 @@ export type Database = {
       }
       users: {
         Row: {
-          address: Json | null
+          addresses: Json | null
           avatar: string | null
           coupon: string | null
           created_at: string
+          defaultAddress: Json | null
           email: string | null
           id: string
           name: string | null
@@ -441,10 +442,11 @@ export type Database = {
           reportedUserId: string[] | null
         }
         Insert: {
-          address?: Json | null
+          addresses?: Json | null
           avatar?: string | null
           coupon?: string | null
           created_at?: string
+          defaultAddress?: Json | null
           email?: string | null
           id: string
           name?: string | null
@@ -454,10 +456,11 @@ export type Database = {
           reportedUserId?: string[] | null
         }
         Update: {
-          address?: Json | null
+          addresses?: Json | null
           avatar?: string | null
           coupon?: string | null
           created_at?: string
+          defaultAddress?: Json | null
           email?: string | null
           id?: string
           name?: string | null
