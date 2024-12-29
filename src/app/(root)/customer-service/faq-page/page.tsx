@@ -10,7 +10,7 @@ const Announcement: React.FC = () => {
 
   return (
     <div className="px-4 py-6 border-b border-[#E0E0E0] md:max-w-[999px]">
-      <div className="mb-7 text-label-strong text-2xl font-semibold mt-10 md:mt-14">
+      <div className="md:mb-7 md:text-label-strong md:text-2xl md:font-semibold mt-10 md:mt-14 md:flex hidden">
         {' '}
         자주 묻는 질문{' '}
       </div>
