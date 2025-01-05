@@ -97,7 +97,11 @@ const HeaderWithInfoIcon = ({
             className="text-white rounded-lg focus:outline-none cursor-pointer"
             onClick={handleTooltipToggle} // 클릭 시 툴팁 상태 토글
           >
-            <InfoIcon color={iconHighLight ? '#9C6D2E' : '#959595'} />
+            <InfoIcon
+              color={iconHighLight ? '#9C6D2E' : '#959595'}
+              width="24"
+              height="24"
+            />
           </div>
 
           {/* 툴팁 */}
