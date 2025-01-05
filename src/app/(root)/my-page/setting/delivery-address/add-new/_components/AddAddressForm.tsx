@@ -1,34 +1,40 @@
 // 배송지 입력 폼(input + button)
 
-// react-daum-postcode 사용했음
-// update: 24.12.22
+// react-daum-postcode 사용
+// update: 24.12.27
 
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
+import useThrottle from '@/hooks/useThrottle';
 import { useUser } from '@/hooks/useUser';
+import api from '@/service/service';
+import { PatchRequest } from '@/types/deliveryAddress';
 import { formatPhoneNumber } from '@/utils/format';
 import { validateName, validatePhoneNumber } from '@/utils/validate';
 
 import { toast } from '@/components/ui/use-toast';
-import { useDaumPostcodePopup } from 'react-daum-postcode';
+import useDaumPostcode from '@/hooks/daumPostCode/usePopup';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddAddressForm = () => {
+  const router = useRouter();
+
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+  //baseAddressWithZoneCode: 주소검색 api로 받아온 주소, 우편번호
   const [baseAddressWithZoneCode, setBaseAddressWithZoneCode] = useState('');
+  const [isDefaultAddress, setIsDefaultAddress] = useState(false);
 
   const [validationErrors, setValidationErrors] = useState<{
     [key: string]: boolean;
   }>({});
 
-  //다음에도 사용 체크박스용 boolean state
-  const [isDefaultAddress, setIsDefaultAddress] = useState(false);
-
   const { data } = useUser();
   const userId = data?.id;
 
-  //input 유효성 검사
+  //input 실시간 유효성 검사
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -65,34 +71,19 @@ const AddAddressForm = () => {
   };
 
   //주소지 검색 - react-daum-postcode
-  const open = useDaumPostcodePopup(
-    'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js'
+  const { daumPostcodeClickHandler } = useDaumPostcode(
+    setBaseAddressWithZoneCode
   );
-  const daumPostcodeCompleteHandler = (data: any) => {
-    const address = data.address;
-    const zoneCode = data.zonecode;
-    setBaseAddressWithZoneCode(`${address} (${zoneCode})`);
-  };
-  const daumPostcodeClickHandler = () => {
-    open({ onComplete: daumPostcodeCompleteHandler });
-  };
 
-  //supabase 'users' Table update
-  const postDeliveryAddress = async (address: Object) => {
-    await fetch('/api/delivery-address', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ...address, id: userId })
-    });
-  };
-
-  //TODO throttling용 함수 별도 제작 후 handleSubmit에 적용
   //배송지 등록
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!userId) {
+      return console.error('유저 정보 찾을 수 없음');
+    }
+
+    //유효성검사 - validation error 확인
     const requiredFields = {
       addressName: '배송지명',
       receiverName: '수령인',
@@ -102,165 +93,223 @@ const AddAddressForm = () => {
     const missingFields = Object.keys(requiredFields).filter(
       (key) => !e.currentTarget[key]?.value || validationErrors[key]
     );
-
     if (missingFields.length > 0) {
       return toast({
         description: `모든 정보를 바르게 입력해주세요`
       });
     }
 
+    //formData 유효성 검사 + 값 반환
     const deliveryFormData = new FormData(e.currentTarget);
 
-    const addressName = deliveryFormData.get('addressName');
-    const receiverName = deliveryFormData.get('receiverName');
-    const phoneNumberForSubmit = formattedPhoneNumber.replace(/[^\d]/g, '');
-    const detailAddress = deliveryFormData.get('detailAddress');
+    const formDataFieldsArr = ['addressName', 'receiverName'];
+    const formDataValues: Record<string, string> = {};
 
-    const addressForRequest = {
+    for (const field of formDataFieldsArr) {
+      const value = deliveryFormData.get(field);
+      if (value === null) {
+        return toast({
+          description: `모든 정보를 바르게 입력해주세요`
+        });
+      }
+      formDataValues[field] = value.toString();
+    }
+    const detailAddress = deliveryFormData.get('detailAddress');
+    const detailAddressForRequest =
+      detailAddress === null ? '' : detailAddress.toString();
+
+    const { addressName, receiverName } = formDataValues;
+
+    //-(하이픈)을 제외한 숫자만 남긴 문자열로 포맷팅
+    const phoneNumberForSubmit = formattedPhoneNumber.replace(/[^\d]/g, '');
+
+    const addressForRequest: PatchRequest = {
+      id: uuidv4(),
       addressName,
       receiverName,
       phoneNumber: phoneNumberForSubmit,
       baseAddress: baseAddressWithZoneCode,
-      detailAddress,
+      detailAddress: detailAddressForRequest,
       isDefaultAddress
     };
 
     try {
-      postDeliveryAddress(addressForRequest);
+      api.address.addNewAddress(addressForRequest, userId);
     } catch (error) {
-      console.error('배송지 업데이트 중 에러');
+      console.error('배송지 업데이트 중 에러:', error);
+      return toast({
+        description: '잠시 후 다시 시도해주세요'
+      });
     }
 
-    //모든 input + validationErrors 초기화
+    toast({
+      description: '배송지 등록 완료'
+    });
+
+    //초기화
     setFormattedPhoneNumber('');
     setBaseAddressWithZoneCode('');
     setIsDefaultAddress(false);
     e.currentTarget.reset();
     setValidationErrors({});
+
+    // router.back();
   };
+
+  //throttling 적용
+  const { throttleButtonClick: submitWithThrottling, isDelay } = useThrottle({
+    fn: handleSubmit,
+    delay: 2000
+  });
+
+  useEffect(() => {
+    if (isDelay) {
+      toast({
+        description: '주소지 저장 중입니다'
+      });
+    }
+  }, [isDelay]);
 
   const ERROR_MESSAGE_STYLE = 'text-red-500 text-sm mt-1 ml-1';
   return (
-    <form onSubmit={handleSubmit}>
-      {/* 배송지명 */}
-      <div className="mb-4">
-        <label className="block text-[16px] font-medium text-[#1F1E1E]">
-          배송지명 <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          name="addressName"
-          maxLength={10}
-          minLength={1}
-          placeholder="최대 10자 이내로 작성해 주세요"
-          className={`w-full p-3 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 ${
-            validationErrors.addressName ? 'border border-red-700' : 'border'
-          }`}
-          onInput={handleInput}
-        />
-        {validationErrors.addressName && (
-          <p className={ERROR_MESSAGE_STYLE}>
-            유효한 배송지명을 입력해 주세요.
-          </p>
-        )}
-      </div>
-
-      {/* 수령인 */}
-      <div className="mb-4">
-        <label className="block text-[16px] font-medium text-[#1F1E1E]">
-          수령인 <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          name="receiverName"
-          maxLength={10}
-          minLength={2}
-          placeholder="최대 10자 이내로 작성해 주세요"
-          className={`w-full p-3 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 ${
-            validationErrors.receiverName ? 'border border-red-700' : 'border'
-          }`}
-          onInput={handleInput}
-        />
-        {validationErrors.receiverName && (
-          <p className={ERROR_MESSAGE_STYLE}>유효한 이름을 입력해 주세요.</p>
-        )}
-      </div>
-
-      {/* 휴대폰 번호 */}
-      <div className="mb-4">
-        <label className="block text-[16px]  font-medium text-[#1F1E1E]">
-          휴대폰 번호 <span className="text-red-500">*</span>
-        </label>
-        <input
-          value={formattedPhoneNumber}
-          onChange={handlePhoneNumberChange}
-          onInput={handleInput}
-          name="phoneNumber"
-          type="text"
-          placeholder="010-0000-0000"
-          className={`w-full p-3 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 ${
-            validationErrors.phoneNumber ? 'border border-red-700' : 'border'
-          }`}
-        />
-        {validationErrors.phoneNumber && (
-          <p className={ERROR_MESSAGE_STYLE}>
-            010-으로 시작되는 11자리의 숫자를 입력해주세요.
-          </p>
-        )}
-      </div>
-
-      {/* 주소 */}
-      <div className="mb-4">
-        <label className="block text-[16px]  font-medium text-[#1F1E1E]">
-          주소 <span className="text-red-500">*</span>
-        </label>
-        <div className="flex space-x-2 mb-2">
-          <input
-            disabled
-            readOnly
-            name="baseAddress"
-            type="text"
-            placeholder="주소 찾기로 입력해 주세요"
-            className="w-full p-3 border rounded select-none"
-            value={baseAddressWithZoneCode}
-          />
-          <button
-            type="button"
-            className="bg-primary-20 text-white px-4 rounded flex justify-center items-center whitespace-nowrap"
-            onClick={daumPostcodeClickHandler}
-          >
-            주소 찾기
-          </button>
+    <form onSubmit={submitWithThrottling}>
+      <div className="flex flex-col gap-6">
+        {/* 배송지명 */}
+        <div>
+          <div className="flex flex-col gap-2">
+            <label className="block text-[16px] font-medium text-[#1F1E1E]">
+              배송지명 <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="addressName"
+              maxLength={10}
+              minLength={1}
+              placeholder="최대 10자 이내로 작성해 주세요"
+              className={`w-full p-3 rounded-[8px] focus:outline-none focus:ring-1 focus:ring-gray-400 ${
+                validationErrors.addressName
+                  ? 'border border-red-700'
+                  : 'border'
+              }`}
+              onInput={handleInput}
+            />
+          </div>
+          {validationErrors.addressName && (
+            <p className={ERROR_MESSAGE_STYLE}>
+              배송지명을 정확하게 입력해 주세요
+            </p>
+          )}
         </div>
-        <input
-          name="detailAddress"
-          type="text"
-          placeholder="상세 주소를 입력해 주세요"
-          className="w-full p-3 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
-        />
+
+        {/* 수령인 */}
+        <div>
+          <div className="flex flex-col gap-2">
+            <label className="block text-[16px] font-medium text-[#1F1E1E]">
+              수령인 <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="receiverName"
+              maxLength={10}
+              minLength={2}
+              placeholder="최대 10자 이내로 작성해 주세요"
+              className={`w-full p-3 rounded-[8px] focus:outline-none focus:ring-1 focus:ring-gray-400 ${
+                validationErrors.receiverName
+                  ? 'border border-red-700'
+                  : 'border'
+              }`}
+              onInput={handleInput}
+            />
+          </div>
+          {validationErrors.receiverName && (
+            <p className={ERROR_MESSAGE_STYLE}>
+              수령인 이름을 정확하게 입력해 주세요
+            </p>
+          )}
+        </div>
+
+        {/* 휴대폰 번호 */}
+        <div>
+          <div className="flex flex-col gap-2">
+            <label className="block text-[16px]  font-medium text-[#1F1E1E]">
+              휴대폰 번호 <span className="text-red-500">*</span>
+            </label>
+            <input
+              value={formattedPhoneNumber}
+              onChange={handlePhoneNumberChange}
+              onInput={handleInput}
+              name="phoneNumber"
+              type="text"
+              placeholder="010-0000-0000"
+              className={`w-full p-3 rounded-[8px] focus:outline-none focus:ring-1 focus:ring-gray-400 ${
+                validationErrors.phoneNumber
+                  ? 'border border-red-700'
+                  : 'border'
+              }`}
+            />
+          </div>
+          {validationErrors.phoneNumber && (
+            <p className={ERROR_MESSAGE_STYLE}>
+              ‘010’을 포함한 숫자만 입력해 주세요
+            </p>
+          )}
+        </div>
+
+        {/* 주소 */}
+        <div className="flex flex-col gap-2">
+          <label className="block text-[16px]  font-medium text-[#1F1E1E]">
+            주소 <span className="text-red-500">*</span>
+          </label>
+          <div className="flex space-x-2">
+            <input
+              disabled
+              readOnly
+              name="baseAddress"
+              type="text"
+              placeholder="주소 찾기로 입력해 주세요"
+              className="w-full p-3 border rounded-[8px] select-none"
+              value={baseAddressWithZoneCode}
+            />
+            <button
+              type="button"
+              className="bg-primary-20 text-white px-4 rounded flex justify-center items-center whitespace-nowrap"
+              onClick={daumPostcodeClickHandler}
+            >
+              주소 찾기
+            </button>
+          </div>
+          <input
+            name="detailAddress"
+            type="text"
+            placeholder="상세 주소를 입력해 주세요"
+            className="w-full p-3 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
+        </div>
       </div>
 
       {/* 기본 배송지 설정 */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center my-2">
         <input
           type="checkbox"
           id="defaultAddress"
           checked={isDefaultAddress}
           onChange={() => setIsDefaultAddress(!isDefaultAddress)}
-          className="w-5 h-5 rounded border-gray-300 text-[#A1734C] focus:ring-[#A1734C]"
+          className="w-4 h-4 rounded border-gray-300 text-[#A1734C] focus:ring-[#A1734C]"
         />
-        <label htmlFor="defaultAddress" className="ml-2 text-gray-700 text-sm">
+        <label
+          htmlFor="defaultAddress"
+          className="ml-2 text-label-strong text-[14px] font-medium leading-5"
+        >
           기본 배송지로 설정
         </label>
       </div>
 
       {/* 등록 버튼 */}
-      <button
-        type="submit"
-        className="w-full py-3 bg-[#A1734C] text-white font-bold rounded hover:bg-[#8E653A] transition"
-      >
-        등록하기
-      </button>
+      <div className="fixed bottom-0 left-0 right-0 shadow-[0_-4px_10px_rgba(0,0,0,0.1)] px-4 pt-3 pb-6">
+        <button className="w-full bg-primary-20 text-white text-center py-3 rounded-[8px]">
+          등록하기
+        </button>
+      </div>
     </form>
   );
 };
