@@ -428,11 +428,12 @@ export type Database = {
       }
       users: {
         Row: {
-          addresses: Json | null
+          // addresses, defaultAddress 타입 변경 금지
+          addresses: Array<{ [key: string]: any }> | null;
+          defaultAddress: { [key: string]: any } | null;
           avatar: string | null
           coupon: string | null
           created_at: string
-          defaultAddress: Json | null
           email: string | null
           id: string
           name: string | null
