@@ -1,7 +1,7 @@
 // 배송지 입력 폼(input + button)
 
 // react-daum-postcode 사용
-// update: 24.12.27
+// code update: 24.12.27
 
 'use client';
 
