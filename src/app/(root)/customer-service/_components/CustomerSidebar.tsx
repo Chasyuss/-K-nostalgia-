@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { BsChevronRight } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import CancelUser, {
@@ -52,7 +52,7 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
             }}
             className={`h-[58px] border-b flex px-5 py-4 justify-between items-center font-medium cursor-pointer ${
               selected === item.id
-                ? 'text-primary-20'
+                ? 'text-primary-20 bg-[#F2F2F2]'
                 : 'text-label-alternative'
             }`}
           >
