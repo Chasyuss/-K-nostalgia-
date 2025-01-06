@@ -69,6 +69,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     headerTitle = '내 프로필';
     showSearch = false;
   }
+
   // 프로필 수정은 UX를 위해 페이지 내에서 처리
   // 마이페이지 - 쿠폰
   else if (pathName === '/my-page/coupon-page') {
@@ -153,6 +154,30 @@ export default function Template({ children }: { children: React.ReactNode }) {
     showNavigation = true;
     showChat = false;
     showTopButton = true;
+  }
+
+  // 고객센터
+  else if (pathName === '/customer-service') {
+    showBackButton = true;
+    headerTitle = '고객센터';
+    showSearch = false;
+    showCart = false;
+  }
+
+  // 고객센터-공지
+  else if (pathName === '/customer-service/announcement') {
+    showBackButton = true;
+    headerTitle = '공지사항';
+    showSearch = false;
+    showCart = false;
+  }
+
+  // 고객센터 - 자주 묻는 질문
+  else if (pathName === '/customer-service/faq-page') {
+    showBackButton = true;
+    headerTitle = '자주 묻는 질문';
+    showSearch = false;
+    showCart = false;
   }
 
   /* 모바일 레이아웃 끝 */
