@@ -153,7 +153,7 @@ const AddAddressForm = () => {
     e.currentTarget.reset();
     setValidationErrors({});
 
-    // router.back();
+    router.back();
   };
 
   //throttling 적용
