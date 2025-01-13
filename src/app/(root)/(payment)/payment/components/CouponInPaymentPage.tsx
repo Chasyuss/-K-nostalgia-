@@ -5,7 +5,7 @@ const CouponInPaymentPage = () => {
         <h2 className="text-gray-600 font-bold">할인/쿠폰</h2>
         <button className="text-blue-500 text-sm">변경</button>
       </div>
-      <p className="text-gray-700 mt-2">-2,000원</p>
+      <p className="text-gray-700 mt-2">0원</p>
     </div>
   );
 };
