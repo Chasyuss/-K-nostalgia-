@@ -1,26 +1,15 @@
 // 배송지 관리 페이지
 
-import api from '@/service/service';
+import { getAddressesInServerComponent } from '@/hooks/deliveryAddress/getAddresses';
+
 import { AllAddresses } from '@/types/deliveryAddress';
-import { createClient } from '@/utils/supabase/server';
+
 import AddNewAddressButton from './_components/AddNewAddressButton';
 import AddressesList from './_components/AddressesList';
 import NoDeliveryAddress from './_components/NoDeliveryAddress';
 
-const getAddress = async () => {
-  const supabase = createClient();
-
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) {
-    return console.error('유저 정보 가져오기 실패');
-  }
-  const userId = data.user.id;
-
-  return await api.address.getAddresses(userId);
-};
-
 const DeliveryAddressManagement = async () => {
-  const allAddresses: AllAddresses = await getAddress();
+  const allAddresses: AllAddresses = await getAddressesInServerComponent();
   const { defaultAddress, addresses } = allAddresses;
 
   const hasNoDefaultAddress: boolean = defaultAddress === null;
