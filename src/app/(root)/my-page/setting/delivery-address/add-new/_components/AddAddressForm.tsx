@@ -16,7 +16,7 @@ import { formatPhoneNumber } from '@/utils/format';
 import { validateName, validatePhoneNumber } from '@/utils/validate';
 
 import { toast } from '@/components/ui/use-toast';
-import useDaumPostcode from '@/hooks/daumPostCode/usePopup';
+import useDaumPostcode from '@/hooks/deliveryAddress/daumPostCode/usePopup';
 import { v4 as uuidv4 } from 'uuid';
 
 const AddAddressForm = () => {
