@@ -5,15 +5,21 @@ import { useEffect } from 'react';
 
 import DeliveryTruck from '@/components/icons/DeliveryTruck';
 import { productImgObject } from '@/hooks/payment/getProductImage';
-import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
+import {
+  Products,
+  usePaymentRequestStore
+} from '@/zustand/payment/usePaymentStore';
 
 import { toast } from '@/components/ui/use-toast';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 
-const OrderProducts = () => {
+interface Props {
+  products: Products;
+  resetState: () => void;
+}
+const OrderProducts = ({ products, resetState }: Props) => {
   const router = useRouter();
-  const { products, resetState } = usePaymentRequestStore();
 
   useEffect(() => {
     if (products[0].id === '') {
