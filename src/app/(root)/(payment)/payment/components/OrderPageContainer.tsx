@@ -1,7 +1,6 @@
 'use client';
 
 import { AllAddresses } from '@/types/deliveryAddress';
-import useDeliveryStore from '@/zustand/payment/useDeliveryStore';
 import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
 import { useState } from 'react';
 import DeliveryAddress from './(address)/DeliveryAddress ';
@@ -15,15 +14,17 @@ interface Props {
 }
 
 const OrderPageContainer = ({ initialAddresses }: Props) => {
+  //배송 요청사항
   const [shippingRequest, setShippingRequest] = useState<string>('');
+  //배송 요청사항 저장 여부
   const [shouldStoreDeliveryRequest, setShouldStoreDeliveryRequest] =
     useState(false);
 
-  const { address } = useDeliveryStore();
-  const { products, resetState } = usePaymentRequestStore();
+  const { products, resetState, payMethod, totalAmount, setTotalAmount } =
+    usePaymentRequestStore();
 
   return (
-    <main className="max-w-md mx-auto p-4 bg-normal">
+    <main className="max-w-md mx-auto p-4 bg-normal mb-14">
       {/* 배송지 */}
       <DeliveryAddress
         initialData={initialAddresses}
@@ -41,13 +42,14 @@ const OrderPageContainer = ({ initialAddresses }: Props) => {
       <CouponInPaymentPage />
 
       {/* 결제 수단 선택 */}
-      {/* TODO 3. */}
       <PaymentMethodSelect />
 
       {/* 결제 요약(가격) 및 결제 버튼 */}
-      {/* 결제 요청 로직 분리 이후 테스트 케이스가 필요할 지 고려 */}
-      {/* TODO 4. */}
-      <OrderSummary />
+      <OrderSummary
+        payMethod={payMethod}
+        shippingRequest={shippingRequest}
+        shouldStoreDeliveryRequest={shouldStoreDeliveryRequest}
+      />
     </main>
   );
 };
