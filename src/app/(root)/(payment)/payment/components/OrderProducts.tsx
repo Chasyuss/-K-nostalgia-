@@ -39,7 +39,7 @@ const OrderProducts = ({ products, resetState }: Props) => {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow mb-4 flex flex-col gap-2">
+    <div className="bg-white p-4 flex flex-col gap-2 rounded-[12px] border-2 border-[#E0E0E0] mb-4">
       <h2 className="text-label-strong text-[18px] font-semibold">주문 상품</h2>
 
       <div className="flex gap-1 items-center leading-5 mt-2">
