@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 //결제 요청 정보에 필요한 값 전역 저장
 //update: 24.11.20
 
-type Products = {
+export type Products = {
   id: string;
   name: string;
   amount: number;
@@ -23,13 +23,15 @@ type State = {
   orderName: string;
   totalAmount: number;
   products: Products;
-  // customer: Customer;
+  customer: Customer;
+  payMethod: string;
 }
 type Actions = {
   setOrderName: (orderName: string) => void;
   setTotalAmount: (amount: number) => void;
   setProducts: (products: Products) => void;
-  // setCustomer: (customer: Customer) => void;
+  setCustomer: (customer: Customer) => void;
+  setPayMethod: (method: string) => void;
   resetState: () => void;
 }
 
@@ -42,22 +44,25 @@ const initialState : State = {
     amount: 0,
     quantity: 0
   }],
-  // customer:{
-  //   customerId: '',
-  //   fullName: '',
-  //   phoneNumber: '',
-  //   email: '',
-  //   address:{}
-  // }
+  customer:{
+    customerId: '',
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    address:{}
+  },
+  payMethod: ''
 }
 
 export const usePaymentRequestStore = create<State & Actions>()(
   persist(
     (set) => ({
       ...initialState,
-      setOrderName: (orderName) => set((state) => ({ ...state, orderName })),
+      setOrderName: (name) => set((state) => ({ ...state, orderName: name })),
       setTotalAmount: (amount) => set((state) => ({ ...state, totalAmount: amount })),
       setProducts: (products) => set((state) => ({ ...state, products })),
+      setCustomer: (customer) => set((state) => ({...state, customer})),
+      setPayMethod: (method) => set((state)=> ({...state, payMethod: method})),
       resetState: () => set(initialState),
     }),
     {
