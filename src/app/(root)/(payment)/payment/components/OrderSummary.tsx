@@ -49,6 +49,7 @@ const OrderSummary = ({
       return response;
     }
 
+    //TODO 결제 POPSTATE 제한 로직 추가
     if (shouldStoreDeliveryRequest) {
       await supabase
         .from('users')
