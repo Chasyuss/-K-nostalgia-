@@ -431,7 +431,7 @@ export type Database = {
       }
       users: {
         Row: {
-          addresses: Json | null
+          addresses: {[key: string] : any}
           avatar: string | null
           coupon: string | null
           created_at: string
