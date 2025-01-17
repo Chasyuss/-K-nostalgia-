@@ -3,7 +3,9 @@
 import requestPayment from '@/app/api/payment/requestPayment';
 import { toast } from '@/components/ui/use-toast';
 import { useUser } from '@/hooks/useUser';
+import { AllAddresses } from '@/types/deliveryAddress';
 import supabase from '@/utils/supabase/client';
+import useDeliveryStore from '@/zustand/payment/useDeliveryStore';
 import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
 import { useRouter } from 'next/navigation';
 
@@ -11,15 +13,17 @@ interface Props {
   payMethod: string;
   shippingRequest: string;
   shouldStoreDeliveryRequest: boolean;
+  initialAddresses: AllAddresses;
 }
 const OrderSummary = ({
   payMethod,
   shippingRequest,
-  shouldStoreDeliveryRequest
+  shouldStoreDeliveryRequest,
+  initialAddresses
 }: Props) => {
   const router = useRouter();
-
   const { products, orderName, totalAmount } = usePaymentRequestStore();
+  const { address } = useDeliveryStore();
   const amount = products.reduce((acc, product) => acc + product.amount, 0);
   const totalQuantity = products.reduce(
     (acc, product) => acc + product.quantity,
@@ -32,6 +36,17 @@ const OrderSummary = ({
     if (!user) {
       return console.error('유저 정보 가져올 수 없음');
     }
+    if (!payMethod) {
+      return toast({
+        description: '결제 수단을 선택해주세요'
+      });
+    }
+    if (!address) {
+      return toast({
+        description: '배송지 추가 혹은 선택 해주세요'
+      });
+    }
+
     const response = await requestPayment({
       payMethod,
       user,
@@ -46,11 +61,12 @@ const OrderSummary = ({
         variant: 'destructive',
         description: '결제에 실패했습니다 다시 시도해주세요'
       });
+      console.log(response.code);
       return response;
     }
 
-    //TODO 결제 POPSTATE 제한 로직 추가
-    if (shouldStoreDeliveryRequest) {
+    //TODO 결제 POPSTATE 제한 로직 추가(paybutton.tsx 주석 참고)
+    if (shouldStoreDeliveryRequest && shippingRequest !== '') {
       await supabase
         .from('users')
         .update({ shippingRequest: shippingRequest })
@@ -85,7 +101,7 @@ const OrderSummary = ({
           onClick={payRequest}
           className="w-[90%] max-w-[420px] bg-primary-20 text-white py-3 rounded-[12px] font-bold"
         >
-          {totalAmount + DELIVERY_FEE}원 결제하기
+          {totalAmount}원 결제하기
         </button>
       </div>
     </>
