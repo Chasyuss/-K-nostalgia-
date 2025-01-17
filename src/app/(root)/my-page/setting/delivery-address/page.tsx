@@ -24,9 +24,7 @@ const DeliveryAddressManagement = async () => {
           <AddressesList initialData={allAddresses} />
         </div>
       )}
-      <div className="p-4 flex justify-center bg-white shadow-md fixed bottom-0 w-full">
-        <AddNewAddressButton />
-      </div>
+      <AddNewAddressButton />
     </>
   );
 };
