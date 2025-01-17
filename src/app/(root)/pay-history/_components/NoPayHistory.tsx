@@ -10,7 +10,7 @@ const NoPayHistory = () => {
   return (
     <main
       className={`w-full md:w-[60vw] flex flex-col  gap-[16px] min-w-[375px] max-w-[737px] ${
-        pathName === '/payment' && 'md:mt-10'
+        pathName === '/pay-history' && 'md:mt-10'
       }`}
     >
       <div
@@ -22,7 +22,7 @@ const NoPayHistory = () => {
       </div>
       <div
         className={`my-auto flex gap-4 justify-center items-center flex-col ${
-          pathName === '/payment' ? 'md:h-[68vh]' : 'mb-[80px]'
+          pathName === '/pay-history' ? 'md:h-[68vh]' : 'mb-[80px]'
         }`}
       >
         <Image

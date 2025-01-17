@@ -1,20 +1,20 @@
 'use client';
 
 import TitleLogo from '@/components/icons/TitleLogo';
-import { useUser } from '@/hooks/useUser';
-import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
-import ShowSearchCart from './_component/ShowSearchCart';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+import { useUser } from '@/hooks/useUser';
 import api from '@/service/service';
 import { useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import ShowSearchCart from './_component/ShowSearchCart';
 
 interface headerNavType {
   path: string;
@@ -208,7 +208,7 @@ const WebHeader = () => {
                   할인쿠폰
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => router.push('/payment')}
+                  onClick={() => router.push('/pay-history')}
                   className="cursor-pointer"
                 >
                   주문 내역
