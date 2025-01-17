@@ -1,8 +1,10 @@
 'use client';
 
 import { AllAddresses } from '@/types/deliveryAddress';
+import supabase from '@/utils/supabase/client';
 import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
-import { useState } from 'react';
+import { User } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 import DeliveryAddress from './(address)/DeliveryAddress ';
 import CouponInPaymentPage from './CouponInPaymentPage';
 import OrderProducts from './OrderProducts';
@@ -11,17 +13,38 @@ import PaymentMethodSelect from './PaymentMethodSelect';
 
 interface Props {
   initialAddresses: AllAddresses;
+  user: User | null;
 }
 
-const OrderPageContainer = ({ initialAddresses }: Props) => {
+const OrderPageContainer = ({ initialAddresses, user }: Props) => {
   //배송 요청사항
   const [shippingRequest, setShippingRequest] = useState<string>('');
   //배송 요청사항 저장 여부
   const [shouldStoreDeliveryRequest, setShouldStoreDeliveryRequest] =
     useState(false);
 
-  const { products, resetState, payMethod, totalAmount, setTotalAmount } =
-    usePaymentRequestStore();
+  const getShippingRequest = async () => {
+    const userId = user?.id;
+    if (!userId) {
+      return console.error('유저 정보를 찾을 수 없음');
+    }
+
+    const { data } = await supabase
+      .from('users')
+      .select('shippingRequest')
+      .eq('id', userId)
+      .single();
+
+    if (data && data.shippingRequest) {
+      setShippingRequest(data.shippingRequest);
+    }
+  };
+
+  useEffect(() => {
+    getShippingRequest();
+  }, []);
+
+  const { products, resetState, payMethod } = usePaymentRequestStore();
 
   return (
     <main className="max-w-md mx-auto p-4 bg-normal mb-14">
@@ -49,6 +72,7 @@ const OrderPageContainer = ({ initialAddresses }: Props) => {
         payMethod={payMethod}
         shippingRequest={shippingRequest}
         shouldStoreDeliveryRequest={shouldStoreDeliveryRequest}
+        initialAddresses={initialAddresses}
       />
     </main>
   );
