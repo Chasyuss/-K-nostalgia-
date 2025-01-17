@@ -130,7 +130,7 @@ const CompletePaymentContent = () => {
         </section>
       </section>
       <div className="font-semibold flex mb-[16px] gap-[12px] fixed bottom-0 bg-[#FAF8F5] py-[12px] shadow-[rgba(31,30,30,0.08)_0px_-2px_8px_0px] w-screen justify-center md:shadow-none md:bg-none md:relative md:w-full md:mb-[80px]">
-        <Link href="payment">
+        <Link href={'/pay-history'}>
           <button className="w-[166px] h-[48px] px-[12px] py-16px border-[1px] border-[#9C6D2E] text-[#9C6D2E] rounded-[12px] md:flex md:flex-1 md:w-[336px] justify-center items-center">
             주문 내역 보기
           </button>

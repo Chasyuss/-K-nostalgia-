@@ -79,14 +79,16 @@ const PayHistoryList = () => {
       ) : (
         <main
           className={`min-w-[375px] mb-[80px] mx-auto bg-normal max-w-[737px] md:w-full md:p-0 overflow-y-auto  ${
-            pathName === '/payment' && 'pt-[16px] mt-[3.25rem]'
+            pathName === '/pay-history' && 'pt-[16px] mt-[3.25rem]'
           }`}
         >
           <TopIconInDesktop />
           {datesToRender.map((date) => (
             <div
               key={date}
-              className={`${pathName === '/payment' && 'pt-4 md:pt-7 md:pb-9'}`}
+              className={`${
+                pathName === '/pay-history' && 'pt-4 md:pt-7 md:pb-9'
+              }`}
             >
               <div className="flex gap-[8px] ml-[4px] px-[16px] md:p-0 md:text-[18px]">
                 <p className="font-medium">{date}</p>

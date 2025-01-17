@@ -35,3 +35,17 @@ export function validateEmail(email: string): boolean {
     return nickname.length > 0 && nickname.length <= 12; 
   }
   
+  export function validatePhoneNumber(value: string){
+    //숫자만 추출
+    const number = value.replace(/[^\d]/g, '');
+
+    if(number.slice(0,3) !== '010'){
+      return false
+    }
+    
+    if(number.length < 11){
+      return false
+    }
+    
+    return true;
+  }

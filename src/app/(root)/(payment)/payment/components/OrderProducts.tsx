@@ -5,15 +5,21 @@ import { useEffect } from 'react';
 
 import DeliveryTruck from '@/components/icons/DeliveryTruck';
 import { productImgObject } from '@/hooks/payment/getProductImage';
-import { usePaymentRequestStore } from '@/zustand/payment/usePaymentStore';
+import {
+  Products,
+  usePaymentRequestStore
+} from '@/zustand/payment/usePaymentStore';
 
 import { toast } from '@/components/ui/use-toast';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 
-const OrderProducts = () => {
+interface Props {
+  products: Products;
+  resetState: () => void;
+}
+const OrderProducts = ({ products, resetState }: Props) => {
   const router = useRouter();
-  const { products, resetState } = usePaymentRequestStore();
 
   useEffect(() => {
     if (products[0].id === '') {
@@ -33,7 +39,7 @@ const OrderProducts = () => {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow mb-4 flex flex-col gap-2">
+    <div className="bg-white p-4 flex flex-col gap-2 rounded-[12px] border-2 border-[#E0E0E0] mb-4">
       <h2 className="text-label-strong text-[18px] font-semibold">주문 상품</h2>
 
       <div className="flex gap-1 items-center leading-5 mt-2">

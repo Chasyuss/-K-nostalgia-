@@ -99,13 +99,17 @@ export default function Template({ children }: { children: React.ReactNode }) {
     showCart = false;
     // showNavigation = false;
   }
-  //배송지 관리 페이지
-  else if (pathName === '/my-page/setting/delivery-address') {
-    showHeader = false;
+  //배송지 관련 페이지
+  else if (pathName.includes('delivery-address')) {
+    showHeader = true;
     showSearch = false;
     showCart = false;
     showNavigation = false;
-    showChat = false;
+    if (pathName.endsWith('add-new')) {
+      headerTitle = '새 배송지 추가';
+    } else {
+      headerTitle = '배송지 관리';
+    }
   }
   // 장바구니
   else if (pathName === '/cart') {

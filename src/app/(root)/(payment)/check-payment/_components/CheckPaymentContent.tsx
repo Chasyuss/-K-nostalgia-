@@ -23,6 +23,7 @@ const CheckPaymentContent = () => {
   const [isPaymentHistoryLoaded, setIsPaymentHistoryLoaded] =
     useState<boolean>(false);
 
+  //TODO 결제  후 ZUSTAND STORAGE 비우기
   useEffect(() => {
     const handlePayment = async () => {
       if (code === 'FAILURE_TYPE_PG') {

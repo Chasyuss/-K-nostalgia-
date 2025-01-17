@@ -131,3 +131,10 @@
 .nth-3\:w-115px:nth-child(3) {
   width: 115px; /* 원하는 너비를 설정 */
 }
+
+/* 체크박스 스타일 지정 */
+[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  accent-color: #9c6d2e;
+}
