@@ -31,7 +31,7 @@ const CompletePaymentContent = () => {
   );
 
   return (
-    <main className="bg-normal pt-10 md:w-[860px] md:mx-auto">
+    <main className="bg-normal min-w-[375px] pt-10 md:w-[860px] md:mx-auto">
       <section className="m-auto mb-[104px] md:mb-6">
         <div className="flex flex-col items-center px-[46.5px] pb-[15px] pt-[8px] md:pt-10">
           <Image

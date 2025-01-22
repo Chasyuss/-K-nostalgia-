@@ -132,7 +132,7 @@ const CheckPaymentContent = () => {
   }, [code, paymentId, router, totalQuantity]);
 
   return (
-    <div className="bg-normal">
+    <div className="bg-normal min-w-[375px]">
       <main className="flex justify-center flex-col items-center text-label-assistive text-sm absolute translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%]">
         <BeatLoader color="#A87939" />
         <h1 className="my-5">

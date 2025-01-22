@@ -48,7 +48,7 @@ const OrderPageContainer = ({ initialAddresses, user }: Props) => {
   const { products, resetState, payMethod } = usePaymentRequestStore();
 
   return (
-    <main className="max-w-md mx-auto p-4 bg-normal mb-14">
+    <main className="max-w-md min-w-[375px] mx-auto p-4 bg-normal mb-14">
       {/* 배송지 */}
       <DeliveryAddress
         initialData={initialAddresses}
