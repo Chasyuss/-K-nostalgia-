@@ -68,7 +68,7 @@ export const PATCH = async(request : NextRequest)=>{
     return errorHandling(userError);
   }
 
-  const prevAddresses: Array<{ [key: string]: any }> = Array.isArray(userData?.addresses)
+  const prevAddresses = Array.isArray(userData?.addresses)
   ? userData.addresses
   : [];
   const prevDefaultAddress = userData?.defaultAddress || null;

@@ -431,7 +431,7 @@ export type Database = {
       }
       users: {
         Row: {
-          addresses: {[key: string] : any}
+          addresses: Json | null
           avatar: string | null
           coupon: string | null
           created_at: string
@@ -502,7 +502,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      users_addresses: "{[key: string]: any}"
     }
     CompositeTypes: {
       [_ in never]: never
