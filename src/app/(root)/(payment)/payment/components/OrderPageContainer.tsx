@@ -37,6 +37,7 @@ const OrderPageContainer = ({ initialAddresses, user }: Props) => {
 
     if (data && data.shippingRequest) {
       setShippingRequest(data.shippingRequest);
+      setShouldStoreDeliveryRequest(true);
     }
   };
 
